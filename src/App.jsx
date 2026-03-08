@@ -1,0 +1,427 @@
+import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+
+const DEPTH = 9;
+const ROTATION = 12;
+const SCALE = 0.62;
+const INK = "rgba(255, 238, 200,";
+const FONT = "'Courier New', monospace";
+const SERIF = "'Courier New', monospace";
+
+const DIM = "rgba(255,238,200,0.35)";
+const MID = "rgba(255,238,200,0.6)";
+const BRIGHT = "rgba(255,238,200,0.92)";
+
+const SECTION_BG = "linear-gradient(180deg, #120a04 0%, #000000 100%)";
+
+// ── Recursive visual ──────────────────────────────────────────────────────────
+
+function RecursiveFrame({ depth, maxDepth, showText = true }) {
+  if (depth > maxDepth) return null;
+  const opacity = 1 - (depth / (maxDepth + 2)) * 0.3;
+  const borderWidth = showText ? Math.max(1, 2.5 - depth * 0.3) : Math.max(0.2, 0.8 - depth * 0.1);
+
+  return (
+    <div style={{ position: "absolute", inset: 0, border: `${borderWidth}px solid ${INK} ${opacity})`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {showText && (
+        <div style={{ position: "absolute", bottom: "10%", left: "5%", transform: `rotate(${ROTATION}deg)`, transformOrigin: "left bottom", userSelect: "none" }}>
+          <div style={{ fontFamily: FONT, fontSize: `${Math.max(3, 14 - depth * 1.5)}px`, letterSpacing: "0.22em", color: `${INK} ${Math.max(0.1, 0.75 - depth * 0.07)})`, whiteSpace: "nowrap" }}>RECURSIVE</div>
+          <div style={{ fontFamily: FONT, fontSize: `${Math.max(2, 5 - depth * 0.55)}px`, letterSpacing: "0.08em", color: `${INK} ${Math.max(0.07, 0.5 - depth * 0.05)})`, whiteSpace: "nowrap", marginTop: "0.2em" }}>MAY 15–17, SAN FRANCISCO</div>
+        </div>
+      )}
+      {depth < maxDepth && (
+        <div style={{ position: "relative", width: `${100 * SCALE}%`, height: `${100 * SCALE}%`, transform: `rotate(${ROTATION}deg)`, flexShrink: 0 }}>
+          <RecursiveFrame depth={depth + 1} maxDepth={maxDepth} showText={showText} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Nav ───────────────────────────────────────────────────────────────────────
+
+const PAGE_LINKS = ["Schedule", "Location"];
+const HOME_LINKS = ["Home", "About", "Speakers", "FAQ", "Apply"];
+
+function Nav({ scrolled }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const onHome = location.pathname === "/";
+
+  const handleClick = (l) => {
+    if (PAGE_LINKS.includes(l)) {
+      navigate(`/${l.toLowerCase()}`);
+      window.scrollTo({ top: 0 });
+      return;
+    }
+    if (!onHome) {
+      navigate("/");
+      // scroll after navigation settles
+      setTimeout(() => {
+        if (l === "Home") { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+        const el = document.getElementById(l.toLowerCase());
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+      return;
+    }
+    if (l === "Home") { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    const el = document.getElementById(l.toLowerCase());
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const allLinks = ["About", "Schedule", "Location", "FAQ", "Apply"];
+
+  return (
+    <nav style={{
+      position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+      display: "flex", alignItems: "center", justifyContent: "space-between",
+      padding: "1.2rem 3rem",
+      background: scrolled ? "rgba(10,7,5,0.88)" : "transparent",
+      backdropFilter: scrolled ? "blur(12px)" : "none",
+      borderBottom: scrolled ? "1px solid rgba(255,238,200,0.06)" : "none",
+      transition: "all 0.4s ease",
+      fontFamily: FONT,
+    }}>
+      <div
+        onClick={() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+        style={{ display: "flex", alignItems: "center", gap: "0.75rem", cursor: "pointer" }}
+      >
+        <div style={{ position: "relative", width: "28px", height: "28px", flexShrink: 0 }}>
+          <div style={{ position: "absolute", inset: 0, transform: `rotate(-${ROTATION / 2}deg)` }}>
+            <RecursiveFrame depth={0} maxDepth={4} showText={false} />
+          </div>
+        </div>
+        <span style={{ fontSize: "1rem", letterSpacing: "0.3em", color: BRIGHT, fontFamily: FONT }}>RECURSIVE</span>
+      </div>
+      <div style={{ display: "flex", gap: "2.5rem" }}>
+        {allLinks.map(l => (
+          <button key={l} onClick={() => handleClick(l)}
+            style={{ background: "none", border: l === "Apply" ? `1px solid rgba(255,238,200,0.5)` : "none", padding: l === "Apply" ? "0.3rem 1rem" : 0, color: l === "Apply" ? BRIGHT : DIM, fontFamily: FONT, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.22em", cursor: "pointer", transition: "color 0.2s" }}
+            onMouseEnter={e => e.target.style.color = BRIGHT}
+            onMouseLeave={e => e.target.style.color = l === "Apply" ? BRIGHT : DIM}
+          >{l.toUpperCase()}</button>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+// ── Grain + shell ─────────────────────────────────────────────────────────────
+
+function Shell({ children }) {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div style={{ background: "#0a0705", minHeight: "100vh", color: BRIGHT }}>
+      <div style={{ position: "fixed", inset: 0, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E\")", opacity: 0.4, pointerEvents: "none", zIndex: 50 }} />
+      <Nav scrolled={scrolled} />
+      {children}
+      <Footer />
+    </div>
+  );
+}
+
+// ── Hero ──────────────────────────────────────────────────────────────────────
+
+function Hero({ loaded }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <section style={{ minHeight: "100vh", background: "linear-gradient(180deg, #2a1508 0%, #120a04 50%, #000000 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "relative", width: "min(72vw, 72vh)", height: "min(72vw, 72vh)", marginBottom: "8rem", opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
+        <div style={{ position: "absolute", inset: 0, transform: `rotate(-${ROTATION / 2}deg)` }}>
+          <RecursiveFrame depth={0} maxDepth={DEPTH} />
+        </div>
+      </div>
+
+      <div style={{ position: "absolute", bottom: "2.5rem", left: 0, right: 0, display: "flex", alignItems: "flex-end", justifyContent: "space-between", padding: "0 3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s" }}>
+        <div>
+          <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", letterSpacing: "0.18em", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: FONT }}>RECURSIVE</div>
+          <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.5rem", fontFamily: FONT }}>MAY 15–17, SAN FRANCISCO</div>
+        </div>
+        <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+          style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: FONT, fontSize: "clamp(0.7rem, 1.4vw, 0.95rem)", letterSpacing: "0.2em", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
+          APPLY NOW
+        </button>
+      </div>
+    </section>
+  );
+}
+
+// ── About ─────────────────────────────────────────────────────────────────────
+
+function About() {
+  return (
+    <section id="about" style={{ padding: "8rem 3rem", fontFamily: FONT }}>
+      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+        <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "2rem" }}>ABOUT THE EVENT</p>
+        <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, fontWeight: 400, letterSpacing: "0.04em", fontFamily: SERIF }}>
+          Recursive is a three-day gathering for researchers and builders working on recursive self-improvement, scalable oversight, and the long-term trajectory of AI systems.
+        </p>
+        <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "2rem", letterSpacing: "0.03em" }}>
+          The conference takes its name seriously. Each session is designed to feed back into the next — talks inform workshops, workshops surface open problems, open problems seed the following day's conversations. We expect participants to arrive with questions and leave with harder ones.
+        </p>
+        <div style={{ marginTop: "3rem", display: "flex", gap: "4rem", flexWrap: "wrap" }}>
+          {[["Location", "San Francisco, CA"], ["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"]].map(([label, val]) => (
+            <div key={label}>
+              <div style={{ fontSize: "0.6rem", letterSpacing: "0.35em", color: DIM, marginBottom: "0.4rem" }}>{label.toUpperCase()}</div>
+              <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.08em" }}>{val}</div>
+            </div>
+          ))}
+        </div>
+        <p style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: DIM, marginTop: "4rem" }}>A CONSTELLATION EVENT, SUPPORTED BY OPENAI</p>
+      </div>
+    </section>
+  );
+}
+
+// ── Speakers ──────────────────────────────────────────────────────────────────
+
+const SPEAKERS = [
+  { name: "Speaker Name", affiliation: "Organization", topic: "Recursive Self-Improvement Timelines" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "Scalable Oversight in Practice" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "Agent Foundations & Fixed Points" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "Governance of RSI-capable Systems" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "Interpretability at Scale" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "TBD" },
+];
+
+function Speakers() {
+  return (
+    <section id="speakers" style={{ padding: "8rem 3rem", fontFamily: FONT }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+        <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>SPEAKERS</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1px", background: "rgba(255,238,200,0.07)" }}>
+          {SPEAKERS.map((s, i) => (
+            <div key={i} style={{ background: "#0e0d0c", padding: "2rem", transition: "background 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "#1a1512"}
+              onMouseLeave={e => e.currentTarget.style.background = "#0e0d0c"}>
+              <div style={{ width: "48px", height: "48px", border: `1px solid ${INK} 0.2)`, marginBottom: "1.5rem" }} />
+              <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.06em", marginBottom: "0.4rem" }}>{s.name}</div>
+              <div style={{ fontSize: "0.7rem", color: DIM, letterSpacing: "0.15em", marginBottom: "1rem" }}>{s.affiliation.toUpperCase()}</div>
+              <div style={{ fontSize: "0.8rem", color: MID, lineHeight: 1.6, borderTop: "1px solid rgba(255,238,200,0.07)", paddingTop: "1rem" }}>{s.topic}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Schedule ──────────────────────────────────────────────────────────────────
+
+const SCHEDULE = [
+  { day: "Day 01", date: "May 15", items: ["Opening keynote", "Workshop: Threat models for RSI", "Evening reception"] },
+  { day: "Day 02", date: "May 16", items: ["Research presentations", "Breakout sessions", "Open problems workshop", "Dinner discussion"] },
+  { day: "Day 03", date: "May 17", items: ["Panel: Governance & policy", "Workshop outputs synthesis", "Closing session"] },
+];
+
+function Schedule() {
+  return (
+    <section style={{ padding: "12rem 3rem 8rem", background: SECTION_BG, minHeight: "100vh", fontFamily: FONT }}>
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>SCHEDULE</p>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {SCHEDULE.map((d, i) => (
+            <div key={i} style={{ display: "grid", gridTemplateColumns: "160px 1fr", borderTop: "1px solid rgba(255,238,200,0.07)", padding: "2rem 0" }}>
+              <div>
+                <div style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: DIM }}>{d.day}</div>
+                <div style={{ fontSize: "1.1rem", color: BRIGHT, marginTop: "0.3rem", letterSpacing: "0.08em" }}>{d.date}</div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                {d.items.map((item, j) => (
+                  <div key={j} style={{ fontSize: "0.85rem", color: MID, letterSpacing: "0.05em", display: "flex", alignItems: "center", gap: "0.8rem" }}>
+                    <span style={{ width: "4px", height: "4px", background: "rgba(255,238,200,0.3)", borderRadius: "50%", flexShrink: 0 }} />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+          <div style={{ borderTop: "1px solid rgba(255,238,200,0.07)" }} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Location ──────────────────────────────────────────────────────────────────
+
+function Location() {
+  return (
+    <section style={{ padding: "12rem 3rem 8rem", background: SECTION_BG, minHeight: "100vh", fontFamily: FONT }}>
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>LOCATION</p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem" }}>
+          <div>
+            <div style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, letterSpacing: "0.04em" }}>
+              San Francisco, CA
+            </div>
+            <div style={{ fontSize: "0.85rem", color: MID, lineHeight: 1.9, marginTop: "1.5rem", letterSpacing: "0.03em" }}>
+              Exact venue details will be shared with accepted attendees ahead of the conference.
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+            {[["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"], ["Travel Support", "Available for select attendees"]].map(([label, val]) => (
+              <div key={label}>
+                <div style={{ fontSize: "0.6rem", letterSpacing: "0.35em", color: DIM, marginBottom: "0.4rem" }}>{label.toUpperCase()}</div>
+                <div style={{ fontSize: "0.95rem", color: BRIGHT, letterSpacing: "0.06em" }}>{val}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── FAQ ───────────────────────────────────────────────────────────────────────
+
+const FAQS = [
+  { q: "Who should apply?", a: "Recursive is aimed at researchers and practitioners working on AI safety, alignment, and related fields. We welcome applications from academics, industry researchers, and independent researchers at all career stages." },
+  { q: "What is the application process?", a: "Submit a short application describing your research interests and what you hope to contribute to the conference. We'll review on a rolling basis and notify applicants by April 1, 2026." },
+  { q: "Is there a fee to attend?", a: "There is no registration fee. We are able to offer travel support for a limited number of attendees — please indicate your need in the application." },
+  { q: "What does 'recursive' mean for the conference format?", a: "Each session is designed to feed into the next. Talks surface questions that workshops address; workshop outputs become the raw material for the following day. Expect the agenda to evolve in real time." },
+  { q: "Where will the conference be held?", a: "San Francisco, CA. Exact venue details will be shared with accepted attendees." },
+];
+
+function FAQ() {
+  const [open, setOpen] = useState(null);
+  return (
+    <section id="faq" style={{ padding: "8rem 3rem", fontFamily: FONT }}>
+      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+        <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>FAQ</p>
+        {FAQS.map((f, i) => (
+          <div key={i} style={{ borderTop: "1px solid rgba(255,238,200,0.07)" }}>
+            <button onClick={() => setOpen(open === i ? null : i)}
+              style={{ width: "100%", background: "none", border: "none", padding: "1.6rem 0", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", textAlign: "left" }}>
+              <span style={{ fontSize: "0.9rem", color: BRIGHT, letterSpacing: "0.06em", fontFamily: FONT }}>{f.q}</span>
+              <span style={{ color: DIM, fontSize: "1.2rem", flexShrink: 0, marginLeft: "1rem", transform: open === i ? "rotate(45deg)" : "none", transition: "transform 0.2s" }}>+</span>
+            </button>
+            {open === i && (
+              <div style={{ fontSize: "0.85rem", color: MID, lineHeight: 1.8, paddingBottom: "1.6rem", letterSpacing: "0.03em" }}>{f.a}</div>
+            )}
+          </div>
+        ))}
+        <div style={{ borderTop: "1px solid rgba(255,238,200,0.07)" }} />
+      </div>
+    </section>
+  );
+}
+
+// ── Apply CTA ─────────────────────────────────────────────────────────────────
+
+function Apply() {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <section id="apply" style={{ padding: "10rem 3rem", background: SECTION_BG, textAlign: "center", fontFamily: FONT }}>
+      <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "2rem" }}>APPLICATIONS OPEN</p>
+      <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, letterSpacing: "0.15em", marginBottom: "1.5rem", fontFamily: FONT }}>RECURSIVE</div>
+      <div style={{ fontSize: "0.9rem", color: MID, letterSpacing: "0.2em", marginBottom: "3rem" }}>MAY 15–17, 2026 · SAN FRANCISCO</div>
+      <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+        style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: FONT, fontSize: "0.85rem", letterSpacing: "0.25em", padding: "1rem 3rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
+        APPLY NOW
+      </button>
+    </section>
+  );
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+
+function Footer() {
+  return (
+    <footer style={{ background: SECTION_BG, padding: "2rem 3rem", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: FONT }}>
+      <span style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "rgba(255,238,200,0.2)" }}>RECURSIVE · AN RSI EVENT</span>
+      <span style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "rgba(255,238,200,0.2)" }}>© 2026</span>
+    </footer>
+  );
+}
+
+// ── Pages ─────────────────────────────────────────────────────────────────────
+
+function HomePage() {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoaded(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <>
+      <Hero loaded={loaded} />
+      <div style={{ background: SECTION_BG }}>
+        <About />
+        {/* <Speakers /> */}
+        <FAQ />
+      </div>
+      <Apply />
+    </>
+  );
+}
+
+// ── Password gate ─────────────────────────────────────────────────────────────
+
+function PasswordGate({ children }) {
+  const [input, setInput] = useState("");
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem("gate") === "1");
+  const [error, setError] = useState(false);
+
+  if (unlocked) return children;
+
+  const attempt = (e) => {
+    e.preventDefault();
+    if (input === "bayviews") {
+      sessionStorage.setItem("gate", "1");
+      setUnlocked(true);
+    } else {
+      setError(true);
+      setInput("");
+    }
+  };
+
+  return (
+    <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: SECTION_BG, fontFamily: FONT }}>
+      <form onSubmit={attempt} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
+        <p style={{ fontSize: "0.65rem", letterSpacing: "0.35em", color: DIM }}>ENTER PASSWORD</p>
+        <input
+          type="password"
+          value={input}
+          onChange={e => { setInput(e.target.value); setError(false); }}
+          autoFocus
+          style={{ background: "transparent", border: `1px solid rgba(255,238,200,${error ? "0.6" : "0.2"})`, color: BRIGHT, fontFamily: FONT, fontSize: "0.85rem", letterSpacing: "0.2em", padding: "0.75rem 1.5rem", outline: "none", textAlign: "center", width: "220px", transition: "border-color 0.2s" }}
+        />
+        {error && <p style={{ fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,238,200,0.4)", margin: 0 }}>INCORRECT</p>}
+      </form>
+    </section>
+  );
+}
+
+function SchedulePage() {
+  return <PasswordGate><Schedule /></PasswordGate>;
+}
+
+function LocationPage() {
+  return <PasswordGate><Location /></PasswordGate>;
+}
+
+// ── Root ──────────────────────────────────────────────────────────────────────
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Shell>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
+          <Route path="/location" element={<LocationPage />} />
+        </Routes>
+      </Shell>
+    </BrowserRouter>
+  );
+}
