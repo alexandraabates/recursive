@@ -161,10 +161,10 @@ function About() {
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
         <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "2rem" }}>ABOUT THE EVENT</p>
         <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, fontWeight: 400, letterSpacing: "0.04em", fontFamily: SERIF }}>
-          Recursive is a three-day gathering for researchers and builders working on recursive self-improvement, scalable oversight, and the long-term trajectory of AI systems.
+          Labs are building automated AI researchers. How do we ensure they're built safely?
         </p>
         <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "2rem", letterSpacing: "0.03em" }}>
-          The conference takes its name seriously. Each session is designed to feed back into the next — talks inform workshops, workshops surface open problems, open problems seed the following day's conversations. We expect participants to arrive with questions and leave with harder ones.
+          Recursive is a three-day conference bringing together researchers and engineers from frontier labs, nonprofits, and academia. Attendees will build relationships and exchange ideas.
         </p>
         <div style={{ marginTop: "3rem", display: "flex", gap: "4rem", flexWrap: "wrap" }}>
           {[["Location", "San Francisco, CA"], ["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"]].map(([label, val]) => (
