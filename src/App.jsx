@@ -5,8 +5,8 @@ const DEPTH = 9;
 const ROTATION = 12;
 const SCALE = 0.62;
 const INK = "rgba(255, 238, 200,";
-const FONT = "'Courier New', monospace";
-const SERIF = "'Courier New', monospace";
+const FONT = "'DM Mono', monospace";
+const SERIF = "'DM Mono', monospace";
 
 const DIM = "rgba(255,238,200,0.35)";
 const MID = "rgba(255,238,200,0.6)";
