@@ -7,6 +7,7 @@ const SCALE = 0.62;
 const INK = "rgba(255, 238, 200,";
 const FONT = "'DM Mono', monospace";
 const SERIF = "'DM Mono', monospace";
+const HEADER_FONT = "'Cy', sans-serif";
 
 const DIM = "rgba(255,238,200,0.35)";
 const MID = "rgba(255,238,200,0.6)";
@@ -91,7 +92,7 @@ function Nav({ scrolled }) {
             <RecursiveFrame depth={0} maxDepth={4} showText={false} />
           </div>
         </div>
-        <span style={{ fontSize: "1rem", letterSpacing: "0.3em", color: BRIGHT, fontFamily: FONT }}>RECURSIVE</span>
+        <span style={{ fontSize: "1rem", letterSpacing: "0.3em", color: BRIGHT, fontFamily: HEADER_FONT }}>RECURSIVE</span>
       </div>
       <div style={{ display: "flex", gap: "2.5rem" }}>
         {allLinks.map(l => (
@@ -141,7 +142,7 @@ function Hero({ loaded }) {
 
       <div style={{ position: "absolute", bottom: "2.5rem", left: 0, right: 0, display: "flex", alignItems: "flex-end", justifyContent: "space-between", padding: "0 3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s" }}>
         <div>
-          <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", letterSpacing: "0.18em", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: FONT }}>RECURSIVE</div>
+          <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", letterSpacing: "0.18em", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: HEADER_FONT }}>RECURSIVE</div>
           <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.5rem", fontFamily: FONT }}>MAY 15–17, SAN FRANCISCO</div>
         </div>
         <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
@@ -321,7 +322,7 @@ function Apply() {
   return (
     <section id="apply" style={{ padding: "10rem 3rem", background: SECTION_BG, textAlign: "center", fontFamily: FONT }}>
       <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "2rem" }}>APPLICATIONS OPEN</p>
-      <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, letterSpacing: "0.15em", marginBottom: "1.5rem", fontFamily: FONT }}>RECURSIVE</div>
+      <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, letterSpacing: "0.15em", marginBottom: "1.5rem", fontFamily: HEADER_FONT }}>RECURSIVE</div>
       <div style={{ fontSize: "0.9rem", color: MID, letterSpacing: "0.2em", marginBottom: "3rem" }}>MAY 15–17, 2026 · SAN FRANCISCO</div>
       <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
         style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: FONT, fontSize: "0.85rem", letterSpacing: "0.25em", padding: "1rem 3rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
