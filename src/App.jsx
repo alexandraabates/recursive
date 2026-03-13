@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 const DEPTH = 9;
 const ROTATION = 12;
 const SCALE = 0.62;
 const INK = "rgba(255, 238, 200,";
-const FONT = "'DM Mono', monospace";
-const SERIF = "'DM Mono', monospace";
+const FONT = "'Montserrat', sans-serif";
+const SERIF = "'Montserrat', sans-serif";
 const HEADER_FONT = "'Cy', sans-serif";
 
 const DIM = "rgba(255,238,200,0.35)";
@@ -26,7 +26,7 @@ function RecursiveFrame({ depth, maxDepth, showText = true }) {
     <div style={{ position: "absolute", inset: 0, border: `${borderWidth}px solid ${INK} ${opacity})`, display: "flex", alignItems: "center", justifyContent: "center" }}>
       {showText && (
         <div style={{ position: "absolute", bottom: "10%", left: "5%", transform: `rotate(${ROTATION}deg)`, transformOrigin: "left bottom", userSelect: "none" }}>
-          <div style={{ fontFamily: FONT, fontSize: `${Math.max(3, 14 - depth * 1.5)}px`, letterSpacing: "0.22em", color: `${INK} ${Math.max(0.1, 0.75 - depth * 0.07)})`, whiteSpace: "nowrap" }}>RECURSIVE</div>
+          <div style={{ fontFamily: HEADER_FONT, fontSize: `${Math.max(3, 14 - depth * 1.5)}px`, color: `${INK} ${Math.max(0.1, 0.75 - depth * 0.07)})`, whiteSpace: "nowrap" }}>Recursive</div>
           <div style={{ fontFamily: FONT, fontSize: `${Math.max(2, 5 - depth * 0.55)}px`, letterSpacing: "0.08em", color: `${INK} ${Math.max(0.07, 0.5 - depth * 0.05)})`, whiteSpace: "nowrap", marginTop: "0.2em" }}>MAY 15–17, SAN FRANCISCO</div>
         </div>
       )}
@@ -81,7 +81,7 @@ function Nav({ scrolled }) {
       backdropFilter: scrolled ? "blur(12px)" : "none",
       borderBottom: scrolled ? "1px solid rgba(255,238,200,0.06)" : "none",
       transition: "all 0.4s ease",
-      fontFamily: FONT,
+      fontFamily: HEADER_FONT,
     }}>
       <div
         onClick={() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
@@ -92,12 +92,12 @@ function Nav({ scrolled }) {
             <RecursiveFrame depth={0} maxDepth={4} showText={false} />
           </div>
         </div>
-        <span style={{ fontSize: "1rem", letterSpacing: "0.3em", color: BRIGHT, fontFamily: HEADER_FONT }}>RECURSIVE</span>
+        <span style={{ fontSize: "1rem", color: BRIGHT, fontFamily: HEADER_FONT }}>Recursive</span>
       </div>
       <div style={{ display: "flex", gap: "2.5rem" }}>
         {allLinks.map(l => (
           <button key={l} onClick={() => handleClick(l)}
-            style={{ background: "none", border: l === "Apply" ? `1px solid rgba(255,238,200,0.5)` : "none", padding: l === "Apply" ? "0.3rem 1rem" : 0, color: l === "Apply" ? BRIGHT : DIM, fontFamily: FONT, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.22em", cursor: "pointer", transition: "color 0.2s" }}
+            style={{ background: "none", border: l === "Apply" ? `1px solid rgba(255,238,200,0.5)` : "none", padding: l === "Apply" ? "0.3rem 1rem" : 0, color: l === "Apply" ? BRIGHT : DIM, fontFamily: HEADER_FONT, fontSize: "0.7rem", fontWeight: 700, cursor: "pointer", transition: "color 0.2s" }}
             onMouseEnter={e => e.target.style.color = BRIGHT}
             onMouseLeave={e => e.target.style.color = l === "Apply" ? BRIGHT : DIM}
           >{l.toUpperCase()}</button>
@@ -133,20 +133,22 @@ function Shell({ children }) {
 function Hero({ loaded }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <section style={{ minHeight: "100vh", background: "linear-gradient(180deg, #2a1508 0%, #120a04 50%, #000000 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "relative", width: "min(72vw, 72vh)", height: "min(72vw, 72vh)", marginBottom: "8rem", opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
+    <section style={{ minHeight: "100vh", background: "linear-gradient(180deg, #3d1c09 0%, #2a1206 25%, #180b03 55%, #080401 80%, #000000 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "relative", width: "min(72vw, 72vh)", height: "min(72vw, 72vh)", marginTop: "5rem", marginBottom: "3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
         <div style={{ position: "absolute", inset: 0, transform: `rotate(-${ROTATION / 2}deg)` }}>
           <RecursiveFrame depth={0} maxDepth={DEPTH} />
         </div>
       </div>
 
-      <div style={{ position: "absolute", bottom: "2.5rem", left: 0, right: 0, display: "flex", alignItems: "flex-end", justifyContent: "space-between", padding: "0 3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s" }}>
+<div style={{ position: "absolute", bottom: "2.5rem", left: 0, right: 0, display: "flex", alignItems: "flex-end", justifyContent: "space-between", padding: "0 3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s" }}>
         <div>
-          <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", letterSpacing: "0.18em", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: HEADER_FONT }}>RECURSIVE</div>
-          <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.5rem", fontFamily: FONT }}>MAY 15–17, SAN FRANCISCO</div>
+          <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: HEADER_FONT }}>Recursive</div>
+          <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.5rem", fontFamily: FONT }}>MAY 15–17, 2026</div>
+          <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.2rem", fontFamily: FONT }}>SAN FRANCISCO</div>
+          <div style={{ fontSize: "0.7rem", color: DIM, marginTop: "1rem", fontFamily: FONT, fontWeight: 700, border: "2px solid rgba(255,238,200,0.7)", padding: "0.5rem 0.75rem", display: "inline-block" }}>A Constellation event. Supported by OpenAI.</div>
         </div>
         <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-          style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: FONT, fontSize: "clamp(0.7rem, 1.4vw, 0.95rem)", letterSpacing: "0.2em", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
+          style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "clamp(0.7rem, 1.4vw, 0.95rem)", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
           APPLY NOW
         </button>
       </div>
@@ -322,10 +324,10 @@ function Apply() {
   return (
     <section id="apply" style={{ padding: "10rem 3rem", background: SECTION_BG, textAlign: "center", fontFamily: FONT }}>
       <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "2rem" }}>APPLICATIONS OPEN</p>
-      <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, letterSpacing: "0.15em", marginBottom: "1.5rem", fontFamily: HEADER_FONT }}>RECURSIVE</div>
+      <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, marginBottom: "1.5rem", fontFamily: HEADER_FONT }}>Recursive</div>
       <div style={{ fontSize: "0.9rem", color: MID, letterSpacing: "0.2em", marginBottom: "3rem" }}>MAY 15–17, 2026 · SAN FRANCISCO</div>
       <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-        style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: FONT, fontSize: "0.85rem", letterSpacing: "0.25em", padding: "1rem 3rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
+        style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "0.85rem", padding: "1rem 3rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
         APPLY NOW
       </button>
     </section>
@@ -337,7 +339,7 @@ function Apply() {
 function Footer() {
   return (
     <footer style={{ background: SECTION_BG, padding: "2rem 3rem", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: FONT }}>
-      <span style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "rgba(255,238,200,0.2)" }}>RECURSIVE · AN RSI EVENT</span>
+      <span style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "rgba(255,238,200,0.2)" }}>Recursive · AN RSI EVENT</span>
       <span style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "rgba(255,238,200,0.2)" }}>© 2026</span>
     </footer>
   );
