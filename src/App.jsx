@@ -15,6 +15,16 @@ const BRIGHT = "rgba(255,238,200,0.92)";
 
 const SECTION_BG = "linear-gradient(180deg, #120a04 0%, #000000 100%)";
 
+function useIsMobile() {
+  const [mobile, setMobile] = useState(() => window.innerWidth <= 768);
+  useEffect(() => {
+    const h = () => setMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, []);
+  return mobile;
+}
+
 // ── Recursive visual ──────────────────────────────────────────────────────────
 
 // SVG version — text scales naturally with each nested level, no clamping needed
@@ -78,8 +88,11 @@ function Nav({ scrolled }) {
   const navigate = useNavigate();
   const location = useLocation();
   const onHome = location.pathname === "/";
+  const isMobile = useIsMobile();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleClick = (l) => {
+    setMenuOpen(false);
     if (PAGE_LINKS.includes(l)) {
       navigate(`/${l.toLowerCase()}`);
       window.scrollTo({ top: 0 });
@@ -87,7 +100,6 @@ function Nav({ scrolled }) {
     }
     if (!onHome) {
       navigate("/");
-      // scroll after navigation settles
       setTimeout(() => {
         if (l === "Home") { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
         const el = document.getElementById(l.toLowerCase());
@@ -103,37 +115,82 @@ function Nav({ scrolled }) {
   const allLinks = ["About", "Schedule", "Location", "FAQ", "Apply"];
 
   return (
-    <nav style={{
-      position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-      display: "flex", alignItems: "center", justifyContent: "space-between",
-      padding: "1.2rem 3rem",
-      background: scrolled ? "rgba(10,7,5,0.88)" : "transparent",
-      backdropFilter: scrolled ? "blur(12px)" : "none",
-      borderBottom: scrolled ? "1px solid rgba(255,238,200,0.06)" : "none",
-      transition: "all 0.4s ease",
-      fontFamily: HEADER_FONT,
-    }}>
-      <div
-        onClick={() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-        style={{ display: "flex", alignItems: "center", gap: "0.75rem", cursor: "pointer" }}
-      >
-        <div style={{ position: "relative", width: "28px", height: "28px", flexShrink: 0 }}>
-          <div style={{ position: "absolute", inset: 0, transform: `rotate(-${ROTATION / 2}deg)` }}>
-            <RecursiveFrame depth={0} maxDepth={4} showText={false} />
+    <>
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: isMobile ? "1rem 1.5rem" : "1.2rem 3rem",
+        background: scrolled || menuOpen ? "rgba(10,7,5,0.95)" : "transparent",
+        backdropFilter: scrolled || menuOpen ? "blur(12px)" : "none",
+        borderBottom: scrolled && !menuOpen ? "1px solid rgba(255,238,200,0.06)" : "none",
+        transition: "background 0.4s ease, backdrop-filter 0.4s ease",
+        fontFamily: HEADER_FONT,
+      }}>
+        {/* Logo */}
+        <div
+          onClick={() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); setMenuOpen(false); }}
+          style={{ display: "flex", alignItems: "center", gap: "0.75rem", cursor: "pointer", zIndex: 101 }}
+        >
+          <div style={{ position: "relative", width: "28px", height: "28px", flexShrink: 0 }}>
+            <div style={{ position: "absolute", inset: 0, transform: `rotate(-${ROTATION / 2}deg)` }}>
+              <RecursiveFrame depth={0} maxDepth={4} />
+            </div>
           </div>
+          <span style={{ fontSize: "1rem", color: BRIGHT, fontFamily: HEADER_FONT }}>Recursive</span>
         </div>
-        <span style={{ fontSize: "1rem", color: BRIGHT, fontFamily: HEADER_FONT }}>Recursive</span>
-      </div>
-      <div style={{ display: "flex", gap: "2.5rem" }}>
-        {allLinks.map(l => (
-          <button key={l} onClick={() => handleClick(l)}
-            style={{ background: "none", border: l === "Apply" ? `1px solid rgba(255,238,200,0.5)` : "none", padding: l === "Apply" ? "0.3rem 1rem" : 0, color: l === "Apply" ? BRIGHT : DIM, fontFamily: HEADER_FONT, fontSize: "0.7rem", fontWeight: 700, cursor: "pointer", transition: "color 0.2s" }}
-            onMouseEnter={e => e.target.style.color = BRIGHT}
-            onMouseLeave={e => e.target.style.color = l === "Apply" ? BRIGHT : DIM}
-          >{l.toUpperCase()}</button>
-        ))}
-      </div>
-    </nav>
+
+        {/* Desktop links */}
+        {!isMobile && (
+          <div style={{ display: "flex", gap: "2.5rem" }}>
+            {allLinks.map(l => (
+              <button key={l} onClick={() => handleClick(l)}
+                style={{ background: "none", border: l === "Apply" ? `1px solid rgba(255,238,200,0.5)` : "none", padding: l === "Apply" ? "0.3rem 1rem" : 0, color: l === "Apply" ? BRIGHT : DIM, fontFamily: HEADER_FONT, fontSize: "0.7rem", fontWeight: 700, cursor: "pointer", transition: "color 0.2s" }}
+                onMouseEnter={e => e.target.style.color = BRIGHT}
+                onMouseLeave={e => e.target.style.color = l === "Apply" ? BRIGHT : DIM}
+              >{l.toUpperCase()}</button>
+            ))}
+          </div>
+        )}
+
+        {/* Hamburger / close button */}
+        {isMobile && (
+          <button onClick={() => setMenuOpen(o => !o)}
+            style={{ background: "none", border: "none", cursor: "pointer", padding: "6px", zIndex: 101, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "5px" }}>
+            {menuOpen ? (
+              <span style={{ color: BRIGHT, fontSize: "1.3rem", lineHeight: 1, fontFamily: FONT }}>✕</span>
+            ) : (
+              <>
+                <span style={{ display: "block", width: "22px", height: "1.5px", background: BRIGHT, borderRadius: "2px" }} />
+                <span style={{ display: "block", width: "22px", height: "1.5px", background: BRIGHT, borderRadius: "2px" }} />
+                <span style={{ display: "block", width: "14px", height: "1.5px", background: BRIGHT, borderRadius: "2px" }} />
+              </>
+            )}
+          </button>
+        )}
+      </nav>
+
+      {/* Mobile full-screen menu */}
+      {isMobile && menuOpen && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 99,
+          background: "rgba(10,5,2,0.98)",
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          gap: "2.8rem", fontFamily: HEADER_FONT,
+        }}>
+          {allLinks.map(l => (
+            <button key={l} onClick={() => handleClick(l)}
+              style={{
+                background: "none",
+                border: l === "Apply" ? `1px solid rgba(255,238,200,0.5)` : "none",
+                padding: l === "Apply" ? "0.7rem 3rem" : 0,
+                color: l === "Apply" ? BRIGHT : DIM,
+                fontFamily: HEADER_FONT, fontSize: "1.1rem", fontWeight: 700, cursor: "pointer", letterSpacing: "0.12em",
+              }}
+            >{l.toUpperCase()}</button>
+          ))}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -162,21 +219,31 @@ function Shell({ children }) {
 
 function Hero({ loaded }) {
   const [hovered, setHovered] = useState(false);
+  const isMobile = useIsMobile();
   return (
     <section style={{ minHeight: "100vh", background: "linear-gradient(180deg, #3d1c09 0%, #2a1206 25%, #180b03 55%, #080401 80%, #000000 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "relative", width: "min(72vw, 72vh)", height: "min(72vw, 72vh)", marginTop: "5rem", marginBottom: "3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
+      <div style={{ position: "relative", width: "min(82vw, 72vh)", height: "min(82vw, 72vh)", marginTop: "5rem", marginBottom: "3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
         <RecursiveFrameSVG maxDepth={DEPTH} />
       </div>
 
-<div style={{ position: "absolute", bottom: "2.5rem", left: 0, right: 0, display: "flex", alignItems: "flex-end", justifyContent: "space-between", padding: "0 3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s" }}>
+      <div style={{
+        position: "absolute", bottom: isMobile ? "1.5rem" : "2.5rem", left: 0, right: 0,
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        alignItems: isMobile ? "flex-start" : "flex-end",
+        justifyContent: "space-between",
+        gap: isMobile ? "1.2rem" : 0,
+        padding: isMobile ? "0 1.5rem" : "0 3rem",
+        opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s"
+      }}>
         <div>
           <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: HEADER_FONT }}>Recursive</div>
           <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.5rem", fontFamily: FONT, fontWeight: 600 }}>MAY 15–17, 2026</div>
           <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.2rem", fontFamily: FONT, fontWeight: 600 }}>SAN FRANCISCO</div>
-          <div style={{ fontSize: "0.7rem", color: DIM, marginTop: "1rem", fontFamily: FONT, fontWeight: 700, border: "2px solid rgba(255,238,200,0.7)", padding: "0.5rem 0.75rem", display: "inline-block" }}>A Constellation event. Supported by OpenAI.</div>
+          {!isMobile && <div style={{ fontSize: "0.7rem", color: DIM, marginTop: "1rem", fontFamily: FONT, fontWeight: 700, border: "2px solid rgba(255,238,200,0.7)", padding: "0.5rem 0.75rem", display: "inline-block" }}>A Constellation event. Supported by OpenAI.</div>}
         </div>
         <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-          style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "clamp(0.7rem, 1.4vw, 0.95rem)", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
+          style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "clamp(0.7rem, 1.4vw, 0.95rem)", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)", alignSelf: isMobile ? "flex-start" : "auto" }}>
           APPLY NOW
         </button>
       </div>
@@ -187,8 +254,9 @@ function Hero({ loaded }) {
 // ── About ─────────────────────────────────────────────────────────────────────
 
 function About() {
+  const isMobile = useIsMobile();
   return (
-    <section id="about" style={{ padding: "8rem 3rem", fontFamily: FONT }}>
+    <section id="about" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT }}>
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
         <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "2rem" }}>ABOUT THE EVENT</p>
         <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, fontWeight: 400, letterSpacing: "0.04em", fontFamily: SERIF }}>
@@ -224,6 +292,7 @@ function parseSpeakersCSV(text) {
 
 function Speakers() {
   const [speakers, setSpeakers] = useState([]);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     fetch("/speakers.csv")
@@ -234,7 +303,7 @@ function Speakers() {
   if (!speakers.length) return null;
 
   return (
-    <section id="speakers" style={{ padding: "8rem 3rem", fontFamily: FONT }}>
+    <section id="speakers" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>SPEAKERS</p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "2rem" }}>
@@ -263,13 +332,14 @@ const SCHEDULE = [
 ];
 
 function Schedule() {
+  const isMobile = useIsMobile();
   return (
-    <section style={{ padding: "12rem 3rem 8rem", background: SECTION_BG, minHeight: "100vh", fontFamily: FONT }}>
+    <section style={{ padding: isMobile ? "8rem 1.5rem 5rem" : "12rem 3rem 8rem", background: SECTION_BG, minHeight: "100vh", fontFamily: FONT }}>
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
         <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>SCHEDULE</p>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {SCHEDULE.map((d, i) => (
-            <div key={i} style={{ display: "grid", gridTemplateColumns: "160px 1fr", borderTop: "1px solid rgba(255,238,200,0.07)", padding: "2rem 0" }}>
+            <div key={i} style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "160px 1fr", borderTop: "1px solid rgba(255,238,200,0.07)", padding: "2rem 0", gap: isMobile ? "1rem" : 0 }}>
               <div>
                 <div style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600 }}>{d.day}</div>
                 <div style={{ fontSize: "1.1rem", color: BRIGHT, marginTop: "0.3rem", letterSpacing: "0.08em" }}>{d.date}</div>
@@ -294,11 +364,12 @@ function Schedule() {
 // ── Location ──────────────────────────────────────────────────────────────────
 
 function Location() {
+  const isMobile = useIsMobile();
   return (
-    <section style={{ padding: "12rem 3rem 8rem", background: SECTION_BG, minHeight: "100vh", fontFamily: FONT }}>
+    <section style={{ padding: isMobile ? "8rem 1.5rem 5rem" : "12rem 3rem 8rem", background: SECTION_BG, minHeight: "100vh", fontFamily: FONT }}>
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
         <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>LOCATION</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? "3rem" : "4rem" }}>
           <div>
             <div style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, letterSpacing: "0.04em" }}>
               San Francisco, CA
@@ -333,8 +404,9 @@ const FAQS = [
 
 function FAQ() {
   const [open, setOpen] = useState(null);
+  const isMobile = useIsMobile();
   return (
-    <section id="faq" style={{ padding: "8rem 3rem", fontFamily: FONT }}>
+    <section id="faq" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT }}>
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
         <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>FAQ</p>
         {FAQS.map((f, i) => (
