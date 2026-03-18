@@ -17,22 +17,51 @@ const SECTION_BG = "linear-gradient(180deg, #120a04 0%, #000000 100%)";
 
 // ── Recursive visual ──────────────────────────────────────────────────────────
 
-function RecursiveFrame({ depth, maxDepth, showText = true }) {
+// SVG version — text scales naturally with each nested level, no clamping needed
+function RecursiveSVGLevel({ depth, maxDepth }) {
+  if (depth > maxDepth) return null;
+  const S = 450;
+  const strokeOpacity = (1 - (depth / (maxDepth + 2)) * 0.3).toFixed(3);
+  return (
+    <g>
+      <rect x={-S} y={-S} width={S * 2} height={S * 2}
+        fill="none"
+        stroke={`rgba(255,238,200,${strokeOpacity})`}
+        strokeWidth="2.5"
+      />
+      <g transform={`translate(${-S * 0.9}, ${S * 0.8}) rotate(${ROTATION})`} style={{ userSelect: "none" }}>
+        <text fontFamily={HEADER_FONT} fontSize="50" fill="rgba(255,238,200,0.85)">Recursive</text>
+        <text fontFamily={FONT} fontSize="15" letterSpacing="4" fill="rgba(255,238,200,0.55)" y="22">MAY 15–17, SAN FRANCISCO</text>
+      </g>
+      {depth < maxDepth && (
+        <g transform={`rotate(${ROTATION}) scale(${SCALE})`}>
+          <RecursiveSVGLevel depth={depth + 1} maxDepth={maxDepth} />
+        </g>
+      )}
+    </g>
+  );
+}
+
+function RecursiveFrameSVG({ maxDepth = DEPTH }) {
+  return (
+    <svg viewBox="-500 -500 1000 1000" style={{ width: "100%", height: "100%", display: "block", overflow: "visible" }}>
+      <g transform={`rotate(${-ROTATION / 2})`}>
+        <RecursiveSVGLevel depth={0} maxDepth={maxDepth} />
+      </g>
+    </svg>
+  );
+}
+
+// Div-based version kept for the small nav logo (text-free, no scaling issue)
+function RecursiveFrame({ depth, maxDepth }) {
   if (depth > maxDepth) return null;
   const opacity = 1 - (depth / (maxDepth + 2)) * 0.3;
-  const borderWidth = showText ? Math.max(1, 2.5 - depth * 0.3) : Math.max(0.2, 0.8 - depth * 0.1);
-
+  const borderWidth = Math.max(0.2, 0.8 - depth * 0.1);
   return (
     <div style={{ position: "absolute", inset: 0, border: `${borderWidth}px solid ${INK} ${opacity})`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      {showText && (
-        <div style={{ position: "absolute", bottom: "10%", left: "5%", transform: `rotate(${ROTATION}deg)`, transformOrigin: "left bottom", userSelect: "none" }}>
-          <div style={{ fontFamily: HEADER_FONT, fontSize: `${Math.max(3, 14 - depth * 1.5)}px`, color: `${INK} ${Math.max(0.1, 0.75 - depth * 0.07)})`, whiteSpace: "nowrap" }}>Recursive</div>
-          <div style={{ fontFamily: FONT, fontSize: `${Math.max(2, 5 - depth * 0.55)}px`, letterSpacing: "0.08em", color: `${INK} ${Math.max(0.07, 0.5 - depth * 0.05)})`, whiteSpace: "nowrap", marginTop: "0.2em" }}>MAY 15–17, SAN FRANCISCO</div>
-        </div>
-      )}
       {depth < maxDepth && (
         <div style={{ position: "relative", width: `${100 * SCALE}%`, height: `${100 * SCALE}%`, transform: `rotate(${ROTATION}deg)`, flexShrink: 0 }}>
-          <RecursiveFrame depth={depth + 1} maxDepth={maxDepth} showText={showText} />
+          <RecursiveFrame depth={depth + 1} maxDepth={maxDepth} />
         </div>
       )}
     </div>
@@ -135,9 +164,7 @@ function Hero({ loaded }) {
   return (
     <section style={{ minHeight: "100vh", background: "linear-gradient(180deg, #3d1c09 0%, #2a1206 25%, #180b03 55%, #080401 80%, #000000 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
       <div style={{ position: "relative", width: "min(72vw, 72vh)", height: "min(72vw, 72vh)", marginTop: "5rem", marginBottom: "3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
-        <div style={{ position: "absolute", inset: 0, transform: `rotate(-${ROTATION / 2}deg)` }}>
-          <RecursiveFrame depth={0} maxDepth={DEPTH} />
-        </div>
+        <RecursiveFrameSVG maxDepth={DEPTH} />
       </div>
 
 <div style={{ position: "absolute", bottom: "2.5rem", left: 0, right: 0, display: "flex", alignItems: "flex-end", justifyContent: "space-between", padding: "0 3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s" }}>
