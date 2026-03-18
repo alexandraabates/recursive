@@ -51,14 +51,14 @@ function MinFrame({ depth, maxDepth }) {
 function GenerativeBackground() {
   const clusters = useMemo(() => {
     const rng = makeRng(1337);
-    return Array.from({ length: 22 }, () => ({
+    return Array.from({ length: 28 }, () => ({
       x: rng() * 100,
       y: rng() * 100,
-      size: 55 + rng() * 130,
+      size: 80 + rng() * 200,
       duration: 55 + rng() * 110,
       delay: -(rng() * 110),
-      opacity: 0.07 + rng() * 0.11,
-      depth: 2 + Math.floor(rng() * 3),
+      opacity: 0.08 + rng() * 0.10,
+      depth: 5 + Math.floor(rng() * 4),
     }));
   }, []);
 
@@ -288,8 +288,8 @@ function Hero({ loaded }) {
       if (!sectionRef.current || !frameRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
       const progress = Math.max(0, Math.min(1, -rect.top / (window.innerHeight * 0.8)));
-      frameRef.current.style.transform = `scale(${1 + progress * 2.4})`;
-      frameRef.current.style.opacity = String(Math.max(0, 1 - progress * 2.2));
+      frameRef.current.style.transform = `scale(${1 + progress * 4.5})`;
+      frameRef.current.style.opacity = String(Math.max(0, 1 - progress * 0.9));
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
