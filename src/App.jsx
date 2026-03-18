@@ -9,7 +9,7 @@ const FONT = "'Montserrat', sans-serif";
 const SERIF = "'Montserrat', sans-serif";
 const HEADER_FONT = "'Cy', sans-serif";
 
-const DIM = "rgba(255,238,200,0.35)";
+const DIM = "rgba(255,238,200,0.6)";
 const MID = "rgba(255,238,200,0.6)";
 const BRIGHT = "rgba(255,238,200,0.92)";
 
@@ -143,8 +143,8 @@ function Hero({ loaded }) {
 <div style={{ position: "absolute", bottom: "2.5rem", left: 0, right: 0, display: "flex", alignItems: "flex-end", justifyContent: "space-between", padding: "0 3rem", opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s" }}>
         <div>
           <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: HEADER_FONT }}>Recursive</div>
-          <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.5rem", fontFamily: FONT }}>MAY 15–17, 2026</div>
-          <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.2rem", fontFamily: FONT }}>SAN FRANCISCO</div>
+          <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.5rem", fontFamily: FONT, fontWeight: 600 }}>MAY 15–17, 2026</div>
+          <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.2rem", fontFamily: FONT, fontWeight: 600 }}>SAN FRANCISCO</div>
           <div style={{ fontSize: "0.7rem", color: DIM, marginTop: "1rem", fontFamily: FONT, fontWeight: 700, border: "2px solid rgba(255,238,200,0.7)", padding: "0.5rem 0.75rem", display: "inline-block" }}>A Constellation event. Supported by OpenAI.</div>
         </div>
         <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
@@ -172,12 +172,12 @@ function About() {
         <div style={{ marginTop: "3rem", display: "flex", gap: "4rem", flexWrap: "wrap" }}>
           {[["Location", "San Francisco, CA"], ["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"]].map(([label, val]) => (
             <div key={label}>
-              <div style={{ fontSize: "0.6rem", letterSpacing: "0.35em", color: DIM, marginBottom: "0.4rem" }}>{label.toUpperCase()}</div>
+              <div style={{ fontSize: "0.6rem", letterSpacing: "0.35em", color: DIM, marginBottom: "0.4rem", fontWeight: 600 }}>{label.toUpperCase()}</div>
               <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.08em" }}>{val}</div>
             </div>
           ))}
         </div>
-        <p style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: DIM, marginTop: "4rem" }}>A CONSTELLATION EVENT, SUPPORTED BY OPENAI</p>
+        <p style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: DIM, marginTop: "4rem", fontWeight: 600 }}>A CONSTELLATION EVENT, SUPPORTED BY OPENAI</p>
       </div>
     </section>
   );
@@ -206,7 +206,7 @@ function Speakers() {
               onMouseLeave={e => e.currentTarget.style.background = "#0e0d0c"}>
               <div style={{ width: "48px", height: "48px", border: `1px solid ${INK} 0.2)`, marginBottom: "1.5rem" }} />
               <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.06em", marginBottom: "0.4rem" }}>{s.name}</div>
-              <div style={{ fontSize: "0.7rem", color: DIM, letterSpacing: "0.15em", marginBottom: "1rem" }}>{s.affiliation.toUpperCase()}</div>
+              <div style={{ fontSize: "0.7rem", color: DIM, letterSpacing: "0.15em", marginBottom: "1rem", fontWeight: 600 }}>{s.affiliation.toUpperCase()}</div>
               <div style={{ fontSize: "0.8rem", color: MID, lineHeight: 1.6, borderTop: "1px solid rgba(255,238,200,0.07)", paddingTop: "1rem" }}>{s.topic}</div>
             </div>
           ))}
@@ -233,7 +233,7 @@ function Schedule() {
           {SCHEDULE.map((d, i) => (
             <div key={i} style={{ display: "grid", gridTemplateColumns: "160px 1fr", borderTop: "1px solid rgba(255,238,200,0.07)", padding: "2rem 0" }}>
               <div>
-                <div style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: DIM }}>{d.day}</div>
+                <div style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600 }}>{d.day}</div>
                 <div style={{ fontSize: "1.1rem", color: BRIGHT, marginTop: "0.3rem", letterSpacing: "0.08em" }}>{d.date}</div>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
@@ -272,7 +272,7 @@ function Location() {
           <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
             {[["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"], ["Travel Support", "Available for select attendees"]].map(([label, val]) => (
               <div key={label}>
-                <div style={{ fontSize: "0.6rem", letterSpacing: "0.35em", color: DIM, marginBottom: "0.4rem" }}>{label.toUpperCase()}</div>
+                <div style={{ fontSize: "0.6rem", letterSpacing: "0.35em", color: DIM, marginBottom: "0.4rem", fontWeight: 600 }}>{label.toUpperCase()}</div>
                 <div style={{ fontSize: "0.95rem", color: BRIGHT, letterSpacing: "0.06em" }}>{val}</div>
               </div>
             ))}
@@ -391,7 +391,7 @@ function PasswordGate({ children }) {
   return (
     <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: SECTION_BG, fontFamily: FONT }}>
       <form onSubmit={attempt} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
-        <p style={{ fontSize: "0.65rem", letterSpacing: "0.35em", color: DIM }}>ENTER PASSWORD</p>
+        <p style={{ fontSize: "0.65rem", letterSpacing: "0.35em", color: DIM, fontWeight: 600 }}>ENTER PASSWORD</p>
         <input
           type="password"
           value={input}
