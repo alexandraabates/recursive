@@ -51,14 +51,14 @@ function MinFrame({ depth, maxDepth }) {
 function GenerativeBackground() {
   const clusters = useMemo(() => {
     const rng = makeRng(1337);
-    return Array.from({ length: 28 }, () => ({
+    return Array.from({ length: 22 }, () => ({
       x: rng() * 100,
       y: rng() * 100,
-      size: 80 + rng() * 200,
+      size: 55 + rng() * 130,
       duration: 55 + rng() * 110,
       delay: -(rng() * 110),
-      opacity: 0.08 + rng() * 0.10,
-      depth: 5 + Math.floor(rng() * 4),
+      opacity: 0.07 + rng() * 0.11,
+      depth: 2 + Math.floor(rng() * 3),
     }));
   }, []);
 
@@ -287,7 +287,7 @@ function Hero({ loaded }) {
     const onScroll = () => {
       if (!sectionRef.current || !frameRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
-      const progress = Math.max(0, Math.min(1, -rect.top / (window.innerHeight * 0.8)));
+      const progress = Math.max(0, Math.min(1, -rect.top / (window.innerHeight * 1.4)));
       frameRef.current.style.transform = `scale(${1 + progress * 4.5})`;
       frameRef.current.style.opacity = String(Math.max(0, 1 - progress * 0.9));
     };
@@ -296,34 +296,39 @@ function Hero({ loaded }) {
   }, []);
 
   return (
-    <section ref={sectionRef} style={{ minHeight: "100vh", background: "linear-gradient(180deg, #3d1c09 0%, #2a1206 25%, #180b03 55%, #080401 80%, #000000 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
-      {/* Outer div handles load fade-in; inner ref handles scroll zoom directly on DOM */}
-      <div style={{ opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
-        <div ref={frameRef} style={{ position: "relative", width: "min(82vw, 72vh)", height: "min(82vw, 72vh)", marginTop: "5rem", marginBottom: "3rem", willChange: "transform, opacity", transformOrigin: "center center" }}>
-          <RecursiveFrameSVG maxDepth={DEPTH} />
+    <section ref={sectionRef} style={{ minHeight: "185vh", background: "linear-gradient(180deg, #3d1c09 0%, #2a1206 20%, #180b03 50%, #080401 75%, #000000 100%)", position: "relative" }}>
+      {/* Sticky viewport — frame stays pinned while section scrolls beneath it */}
+      <div style={{ position: "sticky", top: 0, height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+        {/* Outer: load fade-in only */}
+        <div style={{ opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
+          {/* Inner ref: scroll zoom, no transition */}
+          <div ref={frameRef} style={{ position: "relative", width: "min(82vw, 72vh)", height: "min(82vw, 72vh)", willChange: "transform, opacity", transformOrigin: "center center" }}>
+            <RecursiveFrameSVG maxDepth={DEPTH} />
+          </div>
         </div>
-      </div>
 
-      <div style={{
-        position: "absolute", bottom: isMobile ? "1.5rem" : "2.5rem", left: 0, right: 0,
-        display: "flex",
-        flexDirection: isMobile ? "column" : "row",
-        alignItems: isMobile ? "flex-start" : "flex-end",
-        justifyContent: "space-between",
-        gap: isMobile ? "1.2rem" : 0,
-        padding: isMobile ? "0 1.5rem" : "0 3rem",
-        opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s"
-      }}>
-        <div>
-          <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: HEADER_FONT }}>Recursive</div>
-          <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.5rem", fontFamily: FONT, fontWeight: 600 }}>MAY 15–17, 2026</div>
-          <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.2rem", fontFamily: FONT, fontWeight: 600 }}>SAN FRANCISCO</div>
-          {!isMobile && <div style={{ fontSize: "0.7rem", color: DIM, marginTop: "1rem", fontFamily: FONT, fontWeight: 700, border: "2px solid rgba(255,238,200,0.7)", padding: "0.5rem 0.75rem", display: "inline-block" }}>A Constellation event. Supported by OpenAI.</div>}
+        {/* Hero bottom text — absolute within the sticky viewport */}
+        <div style={{
+          position: "absolute", bottom: isMobile ? "1.5rem" : "2.5rem", left: 0, right: 0,
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "flex-start" : "flex-end",
+          justifyContent: "space-between",
+          gap: isMobile ? "1.2rem" : 0,
+          padding: isMobile ? "0 1.5rem" : "0 3rem",
+          opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s"
+        }}>
+          <div>
+            <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: HEADER_FONT }}>Recursive</div>
+            <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.5rem", fontFamily: FONT, fontWeight: 600 }}>MAY 15–17, 2026</div>
+            <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.2rem", fontFamily: FONT, fontWeight: 600 }}>SAN FRANCISCO</div>
+            {!isMobile && <div style={{ fontSize: "0.7rem", color: DIM, marginTop: "1rem", fontFamily: FONT, fontWeight: 700, border: "2px solid rgba(255,238,200,0.7)", padding: "0.5rem 0.75rem", display: "inline-block" }}>A Constellation event. Supported by OpenAI.</div>}
+          </div>
+          <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+            style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "clamp(0.7rem, 1.4vw, 0.95rem)", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)", alignSelf: isMobile ? "flex-start" : "auto" }}>
+            APPLY NOW
+          </button>
         </div>
-        <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-          style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "clamp(0.7rem, 1.4vw, 0.95rem)", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)", alignSelf: isMobile ? "flex-start" : "auto" }}>
-          APPLY NOW
-        </button>
       </div>
     </section>
   );
