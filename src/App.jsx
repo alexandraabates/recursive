@@ -186,12 +186,12 @@ function About() {
 // ── Speakers ──────────────────────────────────────────────────────────────────
 
 const SPEAKERS = [
-  { name: "Speaker Name", affiliation: "Organization", topic: "Recursive Self-Improvement Timelines" },
-  { name: "Speaker Name", affiliation: "Organization", topic: "Scalable Oversight in Practice" },
-  { name: "Speaker Name", affiliation: "Organization", topic: "Agent Foundations & Fixed Points" },
-  { name: "Speaker Name", affiliation: "Organization", topic: "Governance of RSI-capable Systems" },
-  { name: "Speaker Name", affiliation: "Organization", topic: "Interpretability at Scale" },
-  { name: "Speaker Name", affiliation: "Organization", topic: "TBD" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "Recursive Self-Improvement Timelines", img: "https://i.pravatar.cc/300?img=11" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "Scalable Oversight in Practice", img: "https://i.pravatar.cc/300?img=47" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "Agent Foundations & Fixed Points", img: "https://i.pravatar.cc/300?img=52" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "Governance of RSI-capable Systems", img: "https://i.pravatar.cc/300?img=33" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "Interpretability at Scale", img: "https://i.pravatar.cc/300?img=25" },
+  { name: "Speaker Name", affiliation: "Organization", topic: "TBD", img: "https://i.pravatar.cc/300?img=60" },
 ];
 
 function Speakers() {
@@ -199,15 +199,15 @@ function Speakers() {
     <section id="speakers" style={{ padding: "8rem 3rem", fontFamily: FONT }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>SPEAKERS</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1px", background: "rgba(255,238,200,0.07)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "2rem" }}>
           {SPEAKERS.map((s, i) => (
-            <div key={i} style={{ background: "#0e0d0c", padding: "2rem", transition: "background 0.2s" }}
-              onMouseEnter={e => e.currentTarget.style.background = "#1a1512"}
-              onMouseLeave={e => e.currentTarget.style.background = "#0e0d0c"}>
-              <div style={{ width: "48px", height: "48px", border: `1px solid ${INK} 0.2)`, marginBottom: "1.5rem" }} />
-              <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.06em", marginBottom: "0.4rem" }}>{s.name}</div>
-              <div style={{ fontSize: "0.7rem", color: DIM, letterSpacing: "0.15em", marginBottom: "1rem", fontWeight: 600 }}>{s.affiliation.toUpperCase()}</div>
-              <div style={{ fontSize: "0.8rem", color: MID, lineHeight: 1.6, borderTop: "1px solid rgba(255,238,200,0.07)", paddingTop: "1rem" }}>{s.topic}</div>
+            <div key={i} style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ width: "100%", aspectRatio: "1 / 1", overflow: "hidden", marginBottom: "1.2rem", filter: "grayscale(100%) sepia(20%)" }}>
+                <img src={s.img} alt={s.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              </div>
+              <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.06em", marginBottom: "0.3rem" }}>{s.name}</div>
+              <div style={{ fontSize: "0.65rem", color: DIM, letterSpacing: "0.2em", fontWeight: 600, marginBottom: "0.8rem" }}>{s.affiliation.toUpperCase()}</div>
+              <div style={{ fontSize: "0.78rem", color: MID, lineHeight: 1.6, borderTop: "1px solid rgba(255,238,200,0.07)", paddingTop: "0.8rem" }}>{s.topic}</div>
             </div>
           ))}
         </div>
@@ -360,7 +360,7 @@ function HomePage() {
       <Hero loaded={loaded} />
       <div style={{ background: SECTION_BG }}>
         <About />
-        {/* <Speakers /> */}
+        <Speakers />
         <FAQ />
       </div>
       <Apply />
