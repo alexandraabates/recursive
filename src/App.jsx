@@ -185,25 +185,35 @@ function About() {
 
 // ── Speakers ──────────────────────────────────────────────────────────────────
 
-const SPEAKERS = [
-  { name: "Speaker Name", affiliation: "Organization", topic: "Recursive Self-Improvement Timelines", img: "https://i.pravatar.cc/300?img=11" },
-  { name: "Speaker Name", affiliation: "Organization", topic: "Scalable Oversight in Practice", img: "https://i.pravatar.cc/300?img=47" },
-  { name: "Speaker Name", affiliation: "Organization", topic: "Agent Foundations & Fixed Points", img: "https://i.pravatar.cc/300?img=52" },
-  { name: "Speaker Name", affiliation: "Organization", topic: "Governance of RSI-capable Systems", img: "https://i.pravatar.cc/300?img=33" },
-  { name: "Speaker Name", affiliation: "Organization", topic: "Interpretability at Scale", img: "https://i.pravatar.cc/300?img=25" },
-  { name: "Speaker Name", affiliation: "Organization", topic: "TBD", img: "https://i.pravatar.cc/300?img=60" },
-];
+function parseSpeakersCSV(text) {
+  const [header, ...rows] = text.trim().split("\n");
+  const keys = header.split(",");
+  return rows.map(row => {
+    const vals = row.split(",");
+    return Object.fromEntries(keys.map((k, i) => [k.trim(), (vals[i] || "").trim()]));
+  });
+}
 
 function Speakers() {
+  const [speakers, setSpeakers] = useState([]);
+
+  useEffect(() => {
+    fetch("/speakers.csv")
+      .then(r => r.text())
+      .then(text => setSpeakers(parseSpeakersCSV(text)));
+  }, []);
+
+  if (!speakers.length) return null;
+
   return (
     <section id="speakers" style={{ padding: "8rem 3rem", fontFamily: FONT }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>SPEAKERS</p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "2rem" }}>
-          {SPEAKERS.map((s, i) => (
+          {speakers.map((s, i) => (
             <div key={i} style={{ display: "flex", flexDirection: "column" }}>
               <div style={{ width: "100%", aspectRatio: "1 / 1", overflow: "hidden", marginBottom: "1.2rem", filter: "grayscale(100%) sepia(20%)" }}>
-                <img src={s.img} alt={s.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                <img src={`/speakers/${s.image}`} alt={s.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
               <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.06em", marginBottom: "0.3rem" }}>{s.name}</div>
               <div style={{ fontSize: "0.65rem", color: DIM, letterSpacing: "0.2em", fontWeight: 600, marginBottom: "0.8rem" }}>{s.affiliation.toUpperCase()}</div>
