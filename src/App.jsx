@@ -21,7 +21,7 @@ const SECTION_BG = "linear-gradient(180deg, #120a04 0%, #000000 100%)";
 function RecursiveSVGLevel({ depth, maxDepth }) {
   if (depth > maxDepth) return null;
   const S = 450;
-  const strokeOpacity = (1 - (depth / (maxDepth + 2)) * 0.3).toFixed(3);
+  const strokeOpacity = (1 - (depth / (maxDepth + 2)) * 0.12).toFixed(3);
   return (
     <g>
       <rect x={-S} y={-S} width={S * 2} height={S * 2}
@@ -31,7 +31,8 @@ function RecursiveSVGLevel({ depth, maxDepth }) {
       />
       <g transform={`translate(${-S * 0.9}, ${S * 0.8}) rotate(${ROTATION})`} style={{ userSelect: "none" }}>
         <text fontFamily={HEADER_FONT} fontSize="50" fill="rgba(255,238,200,0.85)">Recursive</text>
-        <text fontFamily={FONT} fontSize="15" letterSpacing="4" fill="rgba(255,238,200,0.55)" y="22">MAY 15–17, SAN FRANCISCO</text>
+        <text fontFamily={FONT} fontSize="15" letterSpacing="4" fill="rgba(255,238,200,0.55)" y="22">MAY 15–17</text>
+        <text fontFamily={FONT} fontSize="15" letterSpacing="4" fill="rgba(255,238,200,0.55)" y="42">SAN FRANCISCO</text>
       </g>
       {depth < maxDepth && (
         <g transform={`rotate(${ROTATION}) scale(${SCALE})`}>
