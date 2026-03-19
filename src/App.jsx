@@ -143,6 +143,7 @@ function RecursiveFrame({ depth, maxDepth }) {
 
 const PAGE_LINKS = ["Schedule", "Location"];
 const HOME_LINKS = ["Home", "About", "Speakers", "FAQ", "Apply"];
+const APPLY_URL = "https://airtable.com/appNKougE3KbWPUln/pagoVKc0aJ1MFG4Gq/form";
 
 function Nav({ scrolled }) {
   const navigate = useNavigate();
@@ -153,6 +154,7 @@ function Nav({ scrolled }) {
 
   const handleClick = (l) => {
     setMenuOpen(false);
+    if (l === "Apply") { window.open(APPLY_URL, "_blank"); return; }
     if (PAGE_LINKS.includes(l)) {
       navigate(`/${l.toLowerCase()}`);
       window.scrollTo({ top: 0 });
@@ -172,7 +174,7 @@ function Nav({ scrolled }) {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  const allLinks = ["About", "Schedule", "Location", "FAQ", "Apply"];
+  const allLinks = ["About", "Speakers", "Schedule", "Location", "FAQ", "Apply"];
 
   return (
     <>
@@ -326,6 +328,7 @@ function Hero({ loaded }) {
             {!isMobile && <div style={{ fontSize: "0.7rem", color: DIM, marginTop: "1rem", fontFamily: FONT, fontWeight: 700, border: "2px solid rgba(255,238,200,0.7)", padding: "0.5rem 0.75rem", display: "inline-block" }}>A Constellation event. Supported by OpenAI.</div>}
           </div>
           <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+            onClick={() => window.open(APPLY_URL, "_blank")}
             style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "clamp(0.7rem, 1.4vw, 0.95rem)", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)", alignSelf: isMobile ? "flex-start" : "auto" }}>
             APPLY NOW
           </button>
@@ -350,7 +353,7 @@ function About() {
           Recursive is a three-day conference bringing together researchers and engineers from frontier labs, nonprofits, and academia. Attendees will build relationships and exchange ideas.
         </p>
         <div style={{ marginTop: "3rem", display: "flex", gap: "4rem", flexWrap: "wrap" }}>
-          {[["Location", "San Francisco, CA"], ["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"]].map(([label, val]) => (
+          {[["Location", "The Embarcadero, SF"], ["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"]].map(([label, val]) => (
             <div key={label}>
               <div style={{ fontSize: "0.6rem", letterSpacing: "0.35em", color: DIM, marginBottom: "0.4rem", fontWeight: 600 }}>{label.toUpperCase()}</div>
               <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.08em" }}>{val}</div>
@@ -456,14 +459,14 @@ function Location() {
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? "3rem" : "4rem" }}>
           <div>
             <div style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, letterSpacing: "0.04em" }}>
-              San Francisco, CA
+              The Embarcadero, San Francisco
             </div>
             <div style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1.5rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
               Exact venue details will be shared with accepted attendees ahead of the conference.
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-            {[["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"], ["Travel Support", "Available for select attendees"]].map(([label, val]) => (
+            {[["Venue", "The Embarcadero, SF"], ["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"], ["Travel Support", "Available for select attendees"]].map(([label, val]) => (
               <div key={label}>
                 <div style={{ fontSize: "0.6rem", letterSpacing: "0.35em", color: DIM, marginBottom: "0.4rem", fontWeight: 600 }}>{label.toUpperCase()}</div>
                 <div style={{ fontSize: "0.95rem", color: BRIGHT, letterSpacing: "0.06em" }}>{val}</div>
@@ -480,7 +483,7 @@ function Location() {
 
 const FAQS = [
   { q: "Who should apply?", a: "Recursive is aimed at researchers and practitioners working on AI safety, alignment, and related fields. We welcome applications from academics, industry researchers, and independent researchers at all career stages." },
-  { q: "What is the application process?", a: "Submit a short application describing your research interests and what you hope to contribute to the conference. We'll review on a rolling basis and notify applicants by April 1, 2026." },
+  { q: "What is the application process?", a: "Submit a short application describing your research interests and what you hope to contribute to the conference. We'll review on a rolling basis and notify applicants as soon as possible." },
   { q: "Is there a fee to attend?", a: "There is no registration fee. We are able to offer travel support for a limited number of attendees — please indicate your need in the application." },
   { q: "What does 'recursive' mean for the conference format?", a: "Each session is designed to feed into the next. Talks surface questions that workshops address; workshop outputs become the raw material for the following day. Expect the agenda to evolve in real time." },
   { q: "Where will the conference be held?", a: "San Francisco, CA. Exact venue details will be shared with accepted attendees." },
@@ -521,6 +524,7 @@ function Apply() {
       <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, marginBottom: "1.5rem", fontFamily: HEADER_FONT }}>Recursive</div>
       <div style={{ fontSize: "0.9rem", color: MID, letterSpacing: "0.2em", marginBottom: "3rem" }}>MAY 15–17, 2026 · SAN FRANCISCO</div>
       <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+        onClick={() => window.open(APPLY_URL, "_blank")}
         style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "0.85rem", padding: "1rem 3rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
         APPLY NOW
       </button>
