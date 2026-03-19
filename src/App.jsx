@@ -6,6 +6,7 @@ const ROTATION = 12;
 const SCALE = 0.62;
 const INK = "rgba(255, 238, 200,";
 const FONT = "'Montserrat', sans-serif";
+const BODY_FONT = "'DM Sans', sans-serif";
 const SERIF = "'Montserrat', sans-serif";
 const HEADER_FONT = "'Cy', sans-serif";
 
@@ -342,10 +343,10 @@ function About() {
     <section id="about" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT }}>
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
         <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "2rem" }}>ABOUT THE EVENT</p>
-        <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, fontWeight: 400, letterSpacing: "0.04em", fontFamily: SERIF }}>
+        <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, fontWeight: 400, letterSpacing: 0, fontFamily: BODY_FONT }}>
           Labs are building automated AI researchers. How do we ensure they're built safely?
         </p>
-        <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "2rem", letterSpacing: "0.03em" }}>
+        <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "2rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
           Recursive is a three-day conference bringing together researchers and engineers from frontier labs, nonprofits, and academia. Attendees will build relationships and exchange ideas.
         </p>
         <div style={{ marginTop: "3rem", display: "flex", gap: "4rem", flexWrap: "wrap" }}>
@@ -397,7 +398,7 @@ function Speakers() {
               </div>
               <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.06em", marginBottom: "0.3rem" }}>{s.name}</div>
               <div style={{ fontSize: "0.65rem", color: DIM, letterSpacing: "0.2em", fontWeight: 600, marginBottom: "0.8rem" }}>{s.affiliation.toUpperCase()}</div>
-              <div style={{ fontSize: "0.78rem", color: MID, lineHeight: 1.6, borderTop: "1px solid rgba(255,238,200,0.07)", paddingTop: "0.8rem" }}>{s.topic}</div>
+              <div style={{ fontSize: "0.85rem", color: MID, lineHeight: 1.6, borderTop: "1px solid rgba(255,238,200,0.07)", paddingTop: "0.8rem", fontFamily: BODY_FONT, letterSpacing: 0 }}>{s.topic}</div>
             </div>
           ))}
         </div>
@@ -457,7 +458,7 @@ function Location() {
             <div style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, letterSpacing: "0.04em" }}>
               San Francisco, CA
             </div>
-            <div style={{ fontSize: "0.85rem", color: MID, lineHeight: 1.9, marginTop: "1.5rem", letterSpacing: "0.03em" }}>
+            <div style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1.5rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
               Exact venue details will be shared with accepted attendees ahead of the conference.
             </div>
           </div>
@@ -500,7 +501,7 @@ function FAQ() {
               <span style={{ color: DIM, fontSize: "1.2rem", flexShrink: 0, marginLeft: "1rem", transform: open === i ? "rotate(45deg)" : "none", transition: "transform 0.2s" }}>+</span>
             </button>
             {open === i && (
-              <div style={{ fontSize: "0.85rem", color: MID, lineHeight: 1.8, paddingBottom: "1.6rem", letterSpacing: "0.03em" }}>{f.a}</div>
+              <div style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.8, paddingBottom: "1.6rem", letterSpacing: 0, fontFamily: BODY_FONT }}>{f.a}</div>
             )}
           </div>
         ))}
