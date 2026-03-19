@@ -174,7 +174,7 @@ function Nav({ scrolled }) {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  const allLinks = ["About", "Speakers", "Schedule", "Location", "FAQ", "Apply"];
+  const allLinks = ["About", "Speakers", "FAQ", "Apply"];
 
   return (
     <>
@@ -486,7 +486,7 @@ const FAQS = [
   { q: "What is the application process?", a: "Submit a short application describing your research interests and what you hope to contribute to the conference. We'll review on a rolling basis and notify applicants as soon as possible." },
   { q: "Is there a fee to attend?", a: "There is no registration fee. We are able to offer travel support for a limited number of attendees — please indicate your need in the application." },
   { q: "What does 'recursive' mean for the conference format?", a: "Each session is designed to feed into the next. Talks surface questions that workshops address; workshop outputs become the raw material for the following day. Expect the agenda to evolve in real time." },
-  { q: "Where will the conference be held?", a: "San Francisco, CA. Exact venue details will be shared with accepted attendees." },
+  { q: "Where will the conference be held?", a: "The Embarcadero, San Francisco. Exact venue details will be shared with accepted attendees." },
 ];
 
 function FAQ() {
