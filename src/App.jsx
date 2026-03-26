@@ -330,14 +330,17 @@ function About() {
       <div style={{ maxWidth: "800px", margin: 0, position: "relative", zIndex: 1 }}>
         <p style={{ fontSize: "clamp(2rem, 8vw, 3.5rem)", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "2rem" }}>ABOUT THE EVENT</p>
         <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, fontWeight: 400, letterSpacing: 0, fontFamily: BODY_FONT }}>
-          Frontier AI labs are racing toward full automation of AI research and development. How do researchers ensure that automation proceeds safely?
+          Frontier AI labs are racing toward full automation of AI research and development. How do researchers reduce risk from AI R&D automation?
         </p>
         <p style={{ fontSize: "1rem", color: BRIGHT, lineHeight: 1.1, marginTop: "2.5rem", letterSpacing: 0, fontFamily: HEADER_FONT, fontWeight: 400 }}>The Theory of Change</p>
         <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
           Many experts believe AI R&D will be automated in the next one to five years. OpenAI has set a deadline of 2028 for building an automated AI researcher, and other labs have made similar statements.
         </p>
         <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
-          If they succeed, the world could be transformed. Recursive will bring together researchers, engineers, and thought leaders to exchange ideas, build relationships, and make progress toward ensuring that this transformation helps the world.
+          If they succeed, the world could be transformed. Automating AI R&D might kick off a cycle of recursive self-improvement (RSI), in which AIs rapidly increase in capabilities. RSI comes with enormous positive potential, and significant risks.
+        </p>
+        <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
+          Recursive will bring together researchers, engineers, and thinkers to exchange ideas, build relationships, and make progress towards reducing these risks.
         </p>
         <p style={{ fontSize: "1rem", color: BRIGHT, lineHeight: 1.1, marginTop: "2.5rem", letterSpacing: 0, fontFamily: HEADER_FONT, fontWeight: 400 }}>The Logistics</p>
         <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1rem", letterSpacing: 0, fontFamily: BODY_FONT }}>

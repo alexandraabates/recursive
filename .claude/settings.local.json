@@ -3,7 +3,31 @@
     "allow": [
       "Bash(git remote set-url origin git@github.com:alexandraabates/recursive.git && git push -u origin main 2>&1)",
       "Bash(git add . && git commit -m \"update text\" && git push 2>&1)",
-      "Bash(git add -A && git commit -m \"$\\(cat <<'EOF'\nvarious font and layout updates\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\nEOF\n\\)\" && git push)"
+      "Bash(git add -A && git commit -m \"$\\(cat <<'EOF'\nvarious font and layout updates\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\nEOF\n\\)\" && git push)",
+      "WebSearch",
+      "WebFetch(domain:ai-2027.com)",
+      "WebFetch(domain:www.redwoodresearch.org)",
+      "WebFetch(domain:nicholas.carlini.com)",
+      "WebFetch(domain:www.rsaconference.com)",
+      "WebFetch(domain:kempnerinstitute.harvard.edu)",
+      "WebFetch(domain:w01fe.com)",
+      "WebFetch(domain:www.gspeakers.com)",
+      "WebFetch(domain:www.aifutures.org)",
+      "WebFetch(domain:cims.nyu.edu)",
+      "WebFetch(domain:www.oasis-open.org)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:cybersymposiums.com)",
+      "WebFetch(domain:polandweekly.com)",
+      "Bash(mkdir -p /Users/alexandrabates/Projects/recursive-site/public/speakers && curl -L -o \"/Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-1.jpg\" \"https://www.aifutures.org/Daniel.jpeg\" && ls -lh /Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-1.jpg)",
+      "Bash(curl -L -o \"/Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-2.jpg\" \"https://www.redwoodresearch.org/headshots/buck.jpeg\" && ls -lh /Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-2.jpg)",
+      "Bash(curl -L -o \"/Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-3.jpg\" \"https://nicholas.carlini.com/nicholas.jpg\" && ls -lh /Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-3.jpg)",
+      "Bash(curl -L -o \"/Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-4.jpg\" \"https://www.oasis-open.org/wp-content/uploads/2025/05/Jason-Clinton-300x300-1.png\" && ls -lh /Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-4.jpg)",
+      "Bash(curl -L -o \"/Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-5.jpg\" \"https://kempnerinstitute.harvard.edu/app/uploads/2024/02/Boaz-aspect-ratio-1-1-310x310-c-default.jpg\" && ls -lh /Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-5.jpg)",
+      "Bash(curl -L -o \"/Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-6.jpg\" \"http://w01fe.com/wordpress/wp-content/uploads/2015/12/profile-300x295.jpg\" && ls -lh /Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-6.jpg)",
+      "Bash(curl -L -o \"/Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-7.jpg\" \"https://polandweekly.com/wp-content/uploads/2025/02/fot-OpenAI.png\" && ls -lh /Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-7.jpg)",
+      "WebFetch(domain:the-decoder.com)",
+      "WebFetch(domain:x.com)",
+      "Bash(sed -i '' \\\\\n  '328s/fontSize: \"2rem\"/fontSize: \"3.5rem\"/' \\\\\n  /Users/alexandrabates/Projects/recursive-site/src/App.jsx\nsed -i '' \\\\\n  '380s/fontSize: \"2rem\"/fontSize: \"3.5rem\"/' \\\\\n  /Users/alexandrabates/Projects/recursive-site/src/App.jsx\nsed -i '' \\\\\n  '495s/fontSize: \"2rem\"/fontSize: \"3.5rem\"/' \\\\\n  /Users/alexandrabates/Projects/recursive-site/src/App.jsx)"
     ]
   }
 }
