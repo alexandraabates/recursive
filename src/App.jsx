@@ -88,7 +88,7 @@ function GenerativeBackground() {
 // ── Recursive visual ──────────────────────────────────────────────────────────
 
 // SVG version — text scales naturally with each nested level, no clamping needed
-function RecursiveSVGLevel({ depth, maxDepth }) {
+function RecursiveSVGLevel({ depth, maxDepth, showText = true }) {
   if (depth > maxDepth) return null;
   const S = 450;
   const strokeOpacity = 1;
@@ -99,25 +99,27 @@ function RecursiveSVGLevel({ depth, maxDepth }) {
         stroke={`rgba(255,238,200,${strokeOpacity})`}
         strokeWidth="2.5"
       />
-      <g transform={`translate(${-S * 0.9}, ${S * 0.8}) rotate(${ROTATION})`} style={{ userSelect: "none" }}>
-        <text fontFamily={HEADER_FONT} fontSize="50" fill="rgba(255,238,200,0.85)">Recursive</text>
-        <text fontFamily={FONT} fontSize="15" letterSpacing="4" fill="rgba(255,238,200,0.55)" y="22">MAY 15–17</text>
-        <text fontFamily={FONT} fontSize="15" letterSpacing="4" fill="rgba(255,238,200,0.55)" y="42">SAN FRANCISCO</text>
-      </g>
+      {showText && (
+        <g transform={`translate(${-S * 0.9}, ${S * 0.8}) rotate(${ROTATION})`} style={{ userSelect: "none" }}>
+          <text fontFamily={HEADER_FONT} fontSize="50" fill="rgba(255,238,200,0.85)">Recursive</text>
+          <text fontFamily={FONT} fontSize="15" fill="rgba(255,238,200,0.55)" y="22">MAY 15–17</text>
+          <text fontFamily={FONT} fontSize="15" fill="rgba(255,238,200,0.55)" y="42">SAN FRANCISCO</text>
+        </g>
+      )}
       {depth < maxDepth && (
         <g transform={`rotate(${ROTATION}) scale(${SCALE})`}>
-          <RecursiveSVGLevel depth={depth + 1} maxDepth={maxDepth} />
+          <RecursiveSVGLevel depth={depth + 1} maxDepth={maxDepth} showText={showText} />
         </g>
       )}
     </g>
   );
 }
 
-function RecursiveFrameSVG({ maxDepth = DEPTH }) {
+function RecursiveFrameSVG({ maxDepth = DEPTH, showText = true }) {
   return (
     <svg viewBox="-500 -500 1000 1000" style={{ width: "100%", height: "100%", display: "block", overflow: "visible" }}>
       <g transform={`rotate(${-ROTATION / 2})`}>
-        <RecursiveSVGLevel depth={0} maxDepth={maxDepth} />
+        <RecursiveSVGLevel depth={0} maxDepth={maxDepth} showText={showText} />
       </g>
     </svg>
   );
@@ -198,7 +200,7 @@ function Nav({ scrolled }) {
               <RecursiveFrame depth={0} maxDepth={4} />
             </div>
           </div>
-          <span style={{ fontSize: "1rem", color: BRIGHT, fontFamily: HEADER_FONT }}>Recursive</span>
+          <span style={{ fontSize: "1.2rem", color: BRIGHT, fontFamily: HEADER_FONT }}>Recursive</span>
         </div>
 
         {/* Desktop links */}
@@ -206,7 +208,7 @@ function Nav({ scrolled }) {
           <div style={{ display: "flex", gap: "2.5rem" }}>
             {allLinks.map(l => (
               <button key={l} onClick={() => handleClick(l)}
-                style={{ background: "none", border: l === "Apply" ? `1px solid rgba(255,238,200,0.5)` : "none", padding: l === "Apply" ? "0.3rem 1rem" : 0, color: l === "Apply" ? BRIGHT : DIM, fontFamily: HEADER_FONT, fontSize: "0.7rem", fontWeight: 700, cursor: "pointer", transition: "color 0.2s" }}
+                style={{ background: "none", border: l === "Apply" ? `1px solid rgba(255,238,200,0.5)` : "none", padding: l === "Apply" ? "0.3rem 1rem" : 0, color: l === "Apply" ? BRIGHT : DIM, fontFamily: HEADER_FONT, fontSize: "0.95rem", fontWeight: 700, cursor: "pointer", transition: "color 0.2s" }}
                 onMouseEnter={e => e.target.style.color = BRIGHT}
                 onMouseLeave={e => e.target.style.color = l === "Apply" ? BRIGHT : DIM}
               >{l.toUpperCase()}</button>
@@ -246,7 +248,7 @@ function Nav({ scrolled }) {
                 border: l === "Apply" ? `1px solid rgba(255,238,200,0.5)` : "none",
                 padding: l === "Apply" ? "0.7rem 3rem" : 0,
                 color: l === "Apply" ? BRIGHT : DIM,
-                fontFamily: HEADER_FONT, fontSize: "1.1rem", fontWeight: 700, cursor: "pointer", letterSpacing: "0.12em",
+                fontFamily: HEADER_FONT, fontSize: "1.1rem", fontWeight: 700, cursor: "pointer", letterSpacing: 0,
               }}
             >{l.toUpperCase()}</button>
           ))}
@@ -269,7 +271,6 @@ function Shell({ children }) {
 
   return (
     <div style={{ background: "#0a0705", minHeight: "100vh", color: BRIGHT }}>
-      <GenerativeBackground />
       <div style={{ position: "fixed", inset: 0, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E\")", opacity: 0.4, pointerEvents: "none", zIndex: 50 }} />
       <Nav scrolled={scrolled} />
       {children}
@@ -283,29 +284,11 @@ function Shell({ children }) {
 function Hero({ loaded }) {
   const [hovered, setHovered] = useState(false);
   const isMobile = useIsMobile();
-  const sectionRef = useRef(null);
-  const frameRef = useRef(null);
-
-  useEffect(() => {
-    const onScroll = () => {
-      if (!sectionRef.current || !frameRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      const progress = Math.max(0, Math.min(1, -rect.top / (window.innerHeight * 1.4)));
-      frameRef.current.style.transform = `scale(${1 + progress * 4.5})`;
-      frameRef.current.style.opacity = String(Math.max(0, 1 - progress * 0.9));
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
-    <section ref={sectionRef} style={{ minHeight: "185vh", background: "linear-gradient(180deg, #3d1c09 0%, #2a1206 20%, #180b03 50%, #080401 75%, #000000 100%)", position: "relative" }}>
-      {/* Sticky viewport — frame stays pinned while section scrolls beneath it */}
-      <div style={{ position: "sticky", top: 0, height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-        {/* Outer: load fade-in only */}
+    <section style={{ minHeight: "100vh", background: "linear-gradient(180deg, #3d1c09 0%, #2a1206 20%, #180b03 50%, #080401 75%, #000000 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
-          {/* Inner ref: scroll zoom, no transition */}
-          <div ref={frameRef} style={{ position: "relative", width: "min(82vw, 72vh)", height: "min(82vw, 72vh)", willChange: "transform, opacity", transformOrigin: "center center" }}>
+          <div style={{ position: "relative", width: "min(92vw, 82vh)", height: "min(92vw, 82vh)", marginTop: "5rem", marginBottom: "3rem" }}>
             <RecursiveFrameSVG maxDepth={DEPTH} />
           </div>
         </div>
@@ -322,18 +305,17 @@ function Hero({ loaded }) {
           opacity: loaded ? 1 : 0, transition: "opacity 1.8s ease 0.4s"
         }}>
           <div>
-            <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: HEADER_FONT }}>Recursive</div>
-            <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.5rem", fontFamily: FONT, fontWeight: 600 }}>MAY 15–17, 2026</div>
-            <div style={{ fontSize: "clamp(0.7rem, 1.5vw, 1rem)", letterSpacing: "0.3em", color: DIM, marginTop: "0.2rem", fontFamily: FONT, fontWeight: 600 }}>SAN FRANCISCO</div>
-            {!isMobile && <div style={{ fontSize: "0.7rem", color: DIM, marginTop: "1rem", fontFamily: FONT, fontWeight: 700, border: "2px solid rgba(255,238,200,0.7)", padding: "0.5rem 0.75rem", display: "inline-block" }}>A Constellation event. Supported by OpenAI.</div>}
+            <div style={{ fontSize: "clamp(2.5rem, 5.5vw, 4.5rem)", color: BRIGHT, fontWeight: 400, lineHeight: 1, fontFamily: HEADER_FONT }}>Recursive</div>
+            <div style={{ fontSize: "clamp(0.8rem, 1.7vw, 1.2rem)", letterSpacing: 0, color: DIM, marginTop: "0.5rem", fontFamily: FONT, fontWeight: 600 }}>MAY 15–17, 2026</div>
+            <div style={{ fontSize: "clamp(0.8rem, 1.7vw, 1.2rem)", letterSpacing: 0, color: DIM, marginTop: "0.2rem", fontFamily: FONT, fontWeight: 600 }}>SAN FRANCISCO</div>
+            {!isMobile && <div style={{ fontSize: "0.8rem", color: DIM, marginTop: "1rem", fontFamily: FONT, fontWeight: 700, border: "1.5px solid rgba(255,238,200,0.7)", padding: "0.5rem 0.75rem", display: "inline-block" }}>A Constellation event. Supported by OpenAI.</div>}
           </div>
           <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
             onClick={() => window.open(APPLY_URL, "_blank")}
-            style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "clamp(0.7rem, 1.4vw, 0.95rem)", padding: "0.75rem 1.8rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)", alignSelf: isMobile ? "flex-start" : "auto" }}>
+            style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "2.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "clamp(1rem, 1.8vw, 1.4rem)", fontWeight: 700, padding: "1.1rem 2.8rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)", alignSelf: isMobile ? "flex-start" : "auto" }}>
             APPLY NOW
           </button>
         </div>
-      </div>
     </section>
   );
 }
@@ -343,25 +325,37 @@ function Hero({ loaded }) {
 function About() {
   const isMobile = useIsMobile();
   return (
-    <section id="about" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT }}>
-      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-        <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "2rem" }}>ABOUT THE EVENT</p>
+    <section id="about" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT, position: "relative", overflow: "hidden" }}>
+      <div style={{ maxWidth: "800px", margin: 0, position: "relative", zIndex: 1 }}>
+        <p style={{ fontSize: "3.5rem", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "2rem" }}>ABOUT THE EVENT</p>
         <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, fontWeight: 400, letterSpacing: 0, fontFamily: BODY_FONT }}>
-          Labs are building automated AI researchers. How do we ensure they're built safely?
+          Frontier AI labs are racing toward full automation of AI research and development. How do researchers ensure that automation proceeds safely?
         </p>
-        <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "2rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
-          Recursive is a three-day conference bringing together researchers and engineers from frontier labs, nonprofits, and academia. Attendees will build relationships and exchange ideas.
+        <p style={{ fontSize: "1rem", color: BRIGHT, lineHeight: 1.1, marginTop: "2.5rem", letterSpacing: 0, fontFamily: HEADER_FONT, fontWeight: 400 }}>The Theory of Change</p>
+        <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
+          Many experts believe AI R&D will be automated in the next one to five years. OpenAI has set a deadline of 2028 for building an automated AI researcher, and other labs have made similar statements.
+        </p>
+        <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
+          If they succeed, the world could be transformed. Recursive will bring together researchers, engineers, and thought leaders to exchange ideas, build relationships, and make progress toward ensuring that this transformation helps the world.
+        </p>
+        <p style={{ fontSize: "1rem", color: BRIGHT, lineHeight: 1.1, marginTop: "2.5rem", letterSpacing: 0, fontFamily: HEADER_FONT, fontWeight: 400 }}>The Logistics</p>
+        <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
+          Recursive is a 2.5 day conference in The Embarcadero, SF. It is primarily organized by Constellation, with support from OpenAI. Attendance is by invitation only. If you are interested in attending, please apply by April 25. We aim to respond to applications within 2 weeks.
         </p>
         <div style={{ marginTop: "3rem", display: "flex", gap: "4rem", flexWrap: "wrap" }}>
           {[["Location", "The Embarcadero, SF"], ["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"]].map(([label, val]) => (
             <div key={label}>
-              <div style={{ fontSize: "0.6rem", letterSpacing: "0.35em", color: DIM, marginBottom: "0.4rem", fontWeight: 600 }}>{label.toUpperCase()}</div>
-              <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.08em" }}>{val}</div>
+              <div style={{ fontSize: "0.6rem", letterSpacing: 0, color: DIM, marginBottom: "0.4rem", fontWeight: 600 }}>{label.toUpperCase()}</div>
+              <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: 0 }}>{val}</div>
             </div>
           ))}
         </div>
-        <p style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: DIM, marginTop: "4rem", fontWeight: 600 }}>A CONSTELLATION EVENT, SUPPORTED BY OPENAI</p>
       </div>
+      {!isMobile && (
+        <div style={{ position: "absolute", right: "-10%", top: "50%", transform: "translateY(-50%)", width: "80vh", height: "80vh", opacity: 0.2, pointerEvents: "none" }}>
+          <RecursiveFrameSVG maxDepth={DEPTH} />
+        </div>
+      )}
     </section>
   );
 }
@@ -390,21 +384,33 @@ function Speakers() {
   if (!speakers.length) return null;
 
   return (
-    <section id="speakers" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT }}>
-      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-        <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>SPEAKERS</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "2rem" }}>
-          {speakers.map((s, i) => (
-            <div key={i} style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ width: "100%", aspectRatio: "1 / 1", overflow: "hidden", marginBottom: "1.2rem", filter: "grayscale(100%) sepia(20%)" }}>
-                <img src={`/speakers/${s.image}`} alt={s.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+    <section id="speakers" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT, position: "relative" }}>
+      <div style={{ width: "100%", position: "relative" }}>
+        <p style={{ fontSize: "3.5rem", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "3rem", textAlign: "center" }}>SPEAKERS</p>
+        {[speakers.slice(0, 5), speakers.slice(5)].map((row, rowIdx) => (
+          <div key={rowIdx} style={{ display: "flex", gap: "2rem", justifyContent: rowIdx === 0 ? "flex-start" : "flex-end", marginBottom: "2rem", flexWrap: "wrap", paddingLeft: rowIdx === 0 ? "4%" : 0, paddingRight: rowIdx === 1 ? "4%" : 0, position: "relative" }}>
+            {rowIdx === 0 && !isMobile && (
+              <div style={{ position: "absolute", top: "-40%", right: "-15%", width: "70vh", height: "70vh", opacity: 0.25, pointerEvents: "none" }}>
+                <RecursiveFrameSVG maxDepth={DEPTH} showText={false} />
               </div>
-              <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: "0.06em", marginBottom: "0.3rem" }}>{s.name}</div>
-              <div style={{ fontSize: "0.65rem", color: DIM, letterSpacing: "0.2em", fontWeight: 600, marginBottom: "0.8rem" }}>{s.affiliation.toUpperCase()}</div>
-              <div style={{ fontSize: "0.85rem", color: MID, lineHeight: 1.6, borderTop: "1px solid rgba(255,238,200,0.07)", paddingTop: "0.8rem", fontFamily: BODY_FONT, letterSpacing: 0 }}>{s.topic}</div>
-            </div>
-          ))}
-        </div>
+            )}
+            {row.map((s, i) => (
+              <div key={i} style={{ display: "flex", flexDirection: "column", width: "240px", flexShrink: 0, position: "relative", zIndex: 1 }}>
+                <div style={{ width: "100%", aspectRatio: "1 / 1", overflow: "hidden", marginBottom: "1.2rem", background: "linear-gradient(180deg, #3d1c09 0%, #000000 100%)", border: "none", borderRadius: "8px" }}>
+                  {s.image && <img src={`/speakers/${s.image}`} alt={s.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "grayscale(100%) sepia(20%)" }} />}
+                </div>
+                <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: 0, marginBottom: "0.4rem" }}>{s.name}</div>
+                <div style={{ width: "40px", height: "2px", background: "rgba(255,238,200,0.5)", marginBottom: "0.4rem" }} />
+                <div style={{ fontSize: "0.65rem", color: DIM, letterSpacing: 0, fontWeight: 600, marginBottom: "0.8rem" }}>{s.affiliation.toUpperCase()}</div>
+              </div>
+            ))}
+            {rowIdx === 1 && !isMobile && (
+              <div style={{ position: "absolute", bottom: "-30%", left: "-2%", width: "75vh", height: "75vh", opacity: 0.2, pointerEvents: "none", zIndex: 0 }}>
+                <RecursiveFrameSVG maxDepth={DEPTH} showText={false} />
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -422,18 +428,18 @@ function Schedule() {
   const isMobile = useIsMobile();
   return (
     <section style={{ padding: isMobile ? "8rem 1.5rem 5rem" : "12rem 3rem 8rem", background: SECTION_BG, minHeight: "100vh", fontFamily: FONT }}>
-      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-        <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>SCHEDULE</p>
+      <div style={{ maxWidth: "900px", margin: 0 }}>
+        <p style={{ fontSize: "2rem", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "3rem" }}>SCHEDULE</p>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {SCHEDULE.map((d, i) => (
             <div key={i} style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "160px 1fr", borderTop: "1px solid rgba(255,238,200,0.07)", padding: "2rem 0", gap: isMobile ? "1rem" : 0 }}>
               <div>
-                <div style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600 }}>{d.day}</div>
-                <div style={{ fontSize: "1.1rem", color: BRIGHT, marginTop: "0.3rem", letterSpacing: "0.08em" }}>{d.date}</div>
+                <div style={{ fontSize: "0.65rem", letterSpacing: 0, color: DIM, fontWeight: 600 }}>{d.day}</div>
+                <div style={{ fontSize: "1.1rem", color: BRIGHT, marginTop: "0.3rem", letterSpacing: 0 }}>{d.date}</div>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
                 {d.items.map((item, j) => (
-                  <div key={j} style={{ fontSize: "0.85rem", color: MID, letterSpacing: "0.05em", display: "flex", alignItems: "center", gap: "0.8rem" }}>
+                  <div key={j} style={{ fontSize: "0.85rem", color: MID, letterSpacing: 0, display: "flex", alignItems: "center", gap: "0.8rem" }}>
                     <span style={{ width: "4px", height: "4px", background: "rgba(255,238,200,0.3)", borderRadius: "50%", flexShrink: 0 }} />
                     {item}
                   </div>
@@ -454,11 +460,11 @@ function Location() {
   const isMobile = useIsMobile();
   return (
     <section style={{ padding: isMobile ? "8rem 1.5rem 5rem" : "12rem 3rem 8rem", background: SECTION_BG, minHeight: "100vh", fontFamily: FONT }}>
-      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-        <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>LOCATION</p>
+      <div style={{ maxWidth: "900px", margin: 0 }}>
+        <p style={{ fontSize: "2rem", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "3rem" }}>LOCATION</p>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? "3rem" : "4rem" }}>
           <div>
-            <div style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, letterSpacing: "0.04em" }}>
+            <div style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, letterSpacing: 0 }}>
               The Embarcadero, San Francisco
             </div>
             <div style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1.5rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
@@ -468,8 +474,8 @@ function Location() {
           <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
             {[["Venue", "The Embarcadero, SF"], ["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"], ["Travel Support", "Available for select attendees"]].map(([label, val]) => (
               <div key={label}>
-                <div style={{ fontSize: "0.6rem", letterSpacing: "0.35em", color: DIM, marginBottom: "0.4rem", fontWeight: 600 }}>{label.toUpperCase()}</div>
-                <div style={{ fontSize: "0.95rem", color: BRIGHT, letterSpacing: "0.06em" }}>{val}</div>
+                <div style={{ fontSize: "0.6rem", letterSpacing: 0, color: DIM, marginBottom: "0.4rem", fontWeight: 600 }}>{label.toUpperCase()}</div>
+                <div style={{ fontSize: "0.95rem", color: BRIGHT, letterSpacing: 0 }}>{val}</div>
               </div>
             ))}
           </div>
@@ -482,25 +488,49 @@ function Location() {
 // ── FAQ ───────────────────────────────────────────────────────────────────────
 
 const FAQS = [
-  { q: "Who should apply?", a: "Recursive is aimed at researchers and practitioners working on AI safety, alignment, and related fields. We welcome applications from academics, industry researchers, and independent researchers at all career stages." },
-  { q: "What is the application process?", a: "Submit a short application describing your research interests and what you hope to contribute to the conference. We'll review on a rolling basis and notify applicants as soon as possible." },
-  { q: "Is there a fee to attend?", a: "There is no registration fee. We are able to offer travel support for a limited number of attendees — please indicate your need in the application." },
-  { q: "What does 'recursive' mean for the conference format?", a: "Each session is designed to feed into the next. Talks surface questions that workshops address; workshop outputs become the raw material for the following day. Expect the agenda to evolve in real time." },
-  { q: "Where will the conference be held?", a: "The Embarcadero, San Francisco. Exact venue details will be shared with accepted attendees." },
+  { q: "Who is this event for?", a: "We hope to bring together safety and security researchers from frontier labs, non-profits, and academia, as well as researchers not working on safety or security issues who'd like to learn more, and PMs, managers, and operators in safety-relevant domains." },
+  { q: "When is the deadline to apply?", a: "The deadline to apply is April 25, and the deadline to register is May 8. We will leave the application link up until the conference begins, but may not review applications submitted after the deadline." },
+  { q: "When should I expect to hear back on my application?", a: "We will process applications on a rolling basis, and will aim to respond within 2 weeks." },
+  { q: "Does it cost anything to attend?", a: "No; attendance is free." },
+  { q: "Who is funding this event?", a: "The event is funded by Constellation Institute and OpenAI." },
+  { q: "What is your privacy policy?", a: "The event will be held under Chatham House Rule." },
+  { q: "How do I recommend colleagues and friends?", a: "There is a recommendation section in our application form. Alternatively, feel free to fill out this recommendation form." },
 ];
+
+function FAQDriftSquares({ depth, maxDepth }) {
+  if (depth > maxDepth) return null;
+  const opacity = Math.max(0.06, 0.38 - (depth / maxDepth) * 0.32);
+  const borderWidth = Math.max(0.5, 1.8 - depth * 0.15);
+  return (
+    <div style={{ position: "absolute", inset: 0, border: `${borderWidth}px solid rgba(255,238,200,${opacity.toFixed(2)})` }}>
+      {depth < maxDepth && (
+        <div style={{ position: "absolute", width: `${100 * SCALE}%`, height: `${100 * SCALE}%`, top: "50%", left: "5%", transform: `translate(-50%, -50%) rotate(${-ROTATION}deg)` }}>
+          <FAQDriftSquares depth={depth + 1} maxDepth={maxDepth} />
+        </div>
+      )}
+    </div>
+  );
+}
 
 function FAQ() {
   const [open, setOpen] = useState(null);
   const isMobile = useIsMobile();
   return (
-    <section id="faq" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT }}>
-      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-        <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "3rem" }}>FAQ</p>
+    <section id="faq" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT, position: "relative", overflow: "hidden" }}>
+      {!isMobile && (
+        <>
+          <div style={{ position: "absolute", top: 0, left: "50%", transform: "translate(-50%, 80px) rotate(12deg)", width: "min(75vw, 700px)", height: "min(75vw, 700px)", pointerEvents: "none", zIndex: 0 }}>
+            <FAQDriftSquares depth={0} maxDepth={7} />
+          </div>
+        </>
+      )}
+      <div style={{ maxWidth: "800px", margin: "0 8% 0 auto", position: "relative", zIndex: 1 }}>
+        <p style={{ fontSize: "3.5rem", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "3rem" }}>FAQ</p>
         {FAQS.map((f, i) => (
           <div key={i} style={{ borderTop: "1px solid rgba(255,238,200,0.07)" }}>
             <button onClick={() => setOpen(open === i ? null : i)}
               style={{ width: "100%", background: "none", border: "none", padding: "1.6rem 0", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", textAlign: "left" }}>
-              <span style={{ fontSize: "0.9rem", color: BRIGHT, letterSpacing: "0.06em", fontFamily: FONT }}>{f.q}</span>
+              <span style={{ fontSize: "0.9rem", color: BRIGHT, letterSpacing: 0, fontFamily: FONT }}>{f.q}</span>
               <span style={{ color: DIM, fontSize: "1.2rem", flexShrink: 0, marginLeft: "1rem", transform: open === i ? "rotate(45deg)" : "none", transition: "transform 0.2s" }}>+</span>
             </button>
             {open === i && (
@@ -519,13 +549,13 @@ function FAQ() {
 function Apply() {
   const [hovered, setHovered] = useState(false);
   return (
-    <section id="apply" style={{ padding: "10rem 3rem", background: SECTION_BG, textAlign: "center", fontFamily: FONT }}>
-      <p style={{ fontSize: "1.1rem", letterSpacing: "0.3em", color: DIM, fontWeight: 600, marginBottom: "2rem" }}>APPLICATIONS OPEN</p>
+    <section id="apply" style={{ padding: "10rem 3rem", background: SECTION_BG, textAlign: "left", fontFamily: FONT }}>
+      <p style={{ fontSize: "2rem", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "2rem" }}>APPLICATIONS OPEN</p>
       <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, marginBottom: "1.5rem", fontFamily: HEADER_FONT }}>Recursive</div>
-      <div style={{ fontSize: "0.9rem", color: MID, letterSpacing: "0.2em", marginBottom: "3rem" }}>MAY 15–17, 2026 · SAN FRANCISCO</div>
+      <div style={{ fontSize: "0.9rem", color: MID, letterSpacing: 0, marginBottom: "3rem" }}>MAY 15–17, 2026 · SAN FRANCISCO</div>
       <button onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
         onClick={() => window.open(APPLY_URL, "_blank")}
-        style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "1.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "0.85rem", padding: "1rem 3rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
+        style={{ background: hovered ? "rgba(255,238,200,0.1)" : "transparent", border: "2.5px solid rgba(255,238,200,0.7)", color: BRIGHT, fontFamily: HEADER_FONT, fontSize: "1rem", fontWeight: 700, padding: "1.1rem 3.5rem", cursor: "pointer", transition: "all 0.2s ease", transform: hovered ? "scale(1.03)" : "scale(1)" }}>
         APPLY NOW
       </button>
     </section>
@@ -537,8 +567,8 @@ function Apply() {
 function Footer() {
   return (
     <footer style={{ background: SECTION_BG, padding: "2rem 3rem", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: FONT }}>
-      <span style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "rgba(255,238,200,0.2)" }}>Recursive · AN RSI EVENT</span>
-      <span style={{ fontSize: "0.65rem", letterSpacing: "0.3em", color: "rgba(255,238,200,0.2)" }}>© 2026</span>
+      <span style={{ fontSize: "0.65rem", letterSpacing: 0, color: "rgba(255,238,200,0.2)" }}>Recursive · AN RSI EVENT</span>
+      <span style={{ fontSize: "0.65rem", letterSpacing: 0, color: "rgba(255,238,200,0.2)" }}>© 2026</span>
     </footer>
   );
 }
@@ -589,15 +619,15 @@ function PasswordGate({ children }) {
   return (
     <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: SECTION_BG, fontFamily: FONT }}>
       <form onSubmit={attempt} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
-        <p style={{ fontSize: "0.65rem", letterSpacing: "0.35em", color: DIM, fontWeight: 600 }}>ENTER PASSWORD</p>
+        <p style={{ fontSize: "0.65rem", letterSpacing: 0, color: DIM, fontWeight: 600 }}>ENTER PASSWORD</p>
         <input
           type="password"
           value={input}
           onChange={e => { setInput(e.target.value); setError(false); }}
           autoFocus
-          style={{ background: "transparent", border: `1px solid rgba(255,238,200,${error ? "0.6" : "0.2"})`, color: BRIGHT, fontFamily: FONT, fontSize: "0.85rem", letterSpacing: "0.2em", padding: "0.75rem 1.5rem", outline: "none", textAlign: "center", width: "220px", transition: "border-color 0.2s" }}
+          style={{ background: "transparent", border: `1px solid rgba(255,238,200,${error ? "0.6" : "0.2"})`, color: BRIGHT, fontFamily: FONT, fontSize: "0.85rem", letterSpacing: 0, padding: "0.75rem 1.5rem", outline: "none", textAlign: "center", width: "220px", transition: "border-color 0.2s" }}
         />
-        {error && <p style={{ fontSize: "0.65rem", letterSpacing: "0.2em", color: "rgba(255,238,200,0.4)", margin: 0 }}>INCORRECT</p>}
+        {error && <p style={{ fontSize: "0.65rem", letterSpacing: 0, color: "rgba(255,238,200,0.4)", margin: 0 }}>INCORRECT</p>}
       </form>
     </section>
   );
