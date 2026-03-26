@@ -1,7 +1,10 @@
-name,affiliation,topic,image
-Speaker Name,Organization,Recursive Self-Improvement Timelines,speaker-1.jpg
-Speaker Name,Organization,Scalable Oversight in Practice,speaker-2.jpg
-Speaker Name,Organization,Agent Foundations & Fixed Points,speaker-3.jpg
-Speaker Name,Organization,Governance of RSI-capable Systems,speaker-4.jpg
-Speaker Name,Organization,Interpretability at Scale,speaker-5.jpg
-Speaker Name,Organization,TBD,speaker-6.jpg
+name,affiliation,image
+Boaz Barak,OpenAI,speaker-5.jpg
+Nicholas Carlini,Anthropic,speaker-3.jpg
+Jason Clinton,Anthropic,speaker-4.jpg
+Daniel Kokotajlo,AI Futures Project,speaker-1.jpg
+Dylan Scandinaro,OpenAI,dylan.jpg
+Buck Shlegeris,Redwood Research,speaker-2.jpg
+Jason Wolfe,OpenAI,speaker-6.jpg
+Wojciech Zaremba,OpenAI,speaker-7.jpg
+More coming soon..., ,
