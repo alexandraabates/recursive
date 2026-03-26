@@ -26,6 +26,7 @@ function useIsMobile() {
   return mobile;
 }
 
+
 // ── Seeded RNG (stable across renders) ────────────────────────────────────────
 
 function makeRng(seed) {
@@ -91,7 +92,7 @@ function GenerativeBackground() {
 function RecursiveSVGLevel({ depth, maxDepth, showText = true }) {
   if (depth > maxDepth) return null;
   const S = 450;
-  const strokeOpacity = 1;
+  const strokeOpacity = Math.max(0.08, 1 - (depth / maxDepth) * 0.85);
   return (
     <g>
       <rect x={-S} y={-S} width={S * 2} height={S * 2}
@@ -288,7 +289,7 @@ function Hero({ loaded }) {
   return (
     <section style={{ minHeight: "100vh", background: "linear-gradient(180deg, #3d1c09 0%, #2a1206 20%, #180b03 50%, #080401 75%, #000000 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
-          <div style={{ position: "relative", width: "min(92vw, 82vh)", height: "min(92vw, 82vh)", marginTop: "5rem", marginBottom: "3rem" }}>
+          <div style={{ position: "relative", width: "min(92vw, 82vh)", height: "min(92vw, 82vh)", marginTop: isMobile ? "-3rem" : "5rem", marginBottom: "3rem" }}>
             <RecursiveFrameSVG maxDepth={DEPTH} />
           </div>
         </div>
@@ -327,7 +328,7 @@ function About() {
   return (
     <section id="about" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT, position: "relative", overflow: "hidden" }}>
       <div style={{ maxWidth: "800px", margin: 0, position: "relative", zIndex: 1 }}>
-        <p style={{ fontSize: "3.5rem", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "2rem" }}>ABOUT THE EVENT</p>
+        <p style={{ fontSize: "clamp(2rem, 8vw, 3.5rem)", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "2rem" }}>ABOUT THE EVENT</p>
         <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", color: BRIGHT, lineHeight: 1.7, fontWeight: 400, letterSpacing: 0, fontFamily: BODY_FONT }}>
           Frontier AI labs are racing toward full automation of AI research and development. How do researchers ensure that automation proceeds safely?
         </p>
@@ -342,7 +343,7 @@ function About() {
         <p style={{ fontSize: "0.9rem", color: MID, lineHeight: 1.9, marginTop: "1rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
           Recursive is a 2.5 day conference in The Embarcadero, SF. It is primarily organized by Constellation, with support from OpenAI. Attendance is by invitation only. If you are interested in attending, please apply by April 25. We aim to respond to applications within 2 weeks.
         </p>
-        <div style={{ marginTop: "3rem", display: "flex", gap: "4rem", flexWrap: "wrap" }}>
+        <div style={{ marginTop: "3rem", display: "flex", gap: isMobile ? "2rem" : "4rem", flexWrap: "wrap" }}>
           {[["Location", "The Embarcadero, SF"], ["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"]].map(([label, val]) => (
             <div key={label}>
               <div style={{ fontSize: "0.6rem", letterSpacing: 0, color: DIM, marginBottom: "0.4rem", fontWeight: 600 }}>{label.toUpperCase()}</div>
@@ -386,31 +387,46 @@ function Speakers() {
   return (
     <section id="speakers" style={{ padding: isMobile ? "6rem 1.5rem" : "8rem 3rem", fontFamily: FONT, position: "relative" }}>
       <div style={{ width: "100%", position: "relative" }}>
-        <p style={{ fontSize: "3.5rem", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "3rem", textAlign: "center" }}>SPEAKERS</p>
-        {[speakers.slice(0, 5), speakers.slice(5)].map((row, rowIdx) => (
-          <div key={rowIdx} style={{ display: "flex", gap: "2rem", justifyContent: rowIdx === 0 ? "flex-start" : "flex-end", marginBottom: "2rem", flexWrap: "wrap", paddingLeft: rowIdx === 0 ? "4%" : 0, paddingRight: rowIdx === 1 ? "4%" : 0, position: "relative" }}>
-            {rowIdx === 0 && !isMobile && (
-              <div style={{ position: "absolute", top: "-40%", right: "-15%", width: "70vh", height: "70vh", opacity: 0.25, pointerEvents: "none" }}>
-                <RecursiveFrameSVG maxDepth={DEPTH} showText={false} />
-              </div>
-            )}
-            {row.map((s, i) => (
-              <div key={i} style={{ display: "flex", flexDirection: "column", width: "240px", flexShrink: 0, position: "relative", zIndex: 1 }}>
-                <div style={{ width: "100%", aspectRatio: "1 / 1", overflow: "hidden", marginBottom: "1.2rem", background: "linear-gradient(180deg, #3d1c09 0%, #000000 100%)", border: "none", borderRadius: "8px" }}>
+        <p style={{ fontSize: "clamp(2rem, 8vw, 3.5rem)", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "3rem", textAlign: "center" }}>SPEAKERS</p>
+        {isMobile ? (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", justifyContent: "center" }}>
+            {speakers.map((s, i) => (
+              <div key={i} style={{ display: "flex", flexDirection: "column", width: "calc(50% - 0.75rem)", flexShrink: 0 }}>
+                <div style={{ width: "100%", aspectRatio: "1 / 1", overflow: "hidden", marginBottom: "0.8rem", background: "linear-gradient(180deg, #3d1c09 0%, #000000 100%)", borderRadius: "8px" }}>
                   {s.image && <img src={`/speakers/${s.image}`} alt={s.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "grayscale(100%) sepia(20%)" }} />}
                 </div>
-                <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: 0, marginBottom: "0.4rem" }}>{s.name}</div>
-                <div style={{ width: "40px", height: "2px", background: "rgba(255,238,200,0.5)", marginBottom: "0.4rem" }} />
-                <div style={{ fontSize: "0.65rem", color: DIM, letterSpacing: 0, fontWeight: 600, marginBottom: "0.8rem" }}>{s.affiliation.toUpperCase()}</div>
+                <div style={{ fontSize: "0.85rem", color: BRIGHT, letterSpacing: 0, marginBottom: "0.3rem" }}>{s.name}</div>
+                <div style={{ width: "30px", height: "2px", background: "rgba(255,238,200,0.5)", marginBottom: "0.3rem" }} />
+                <div style={{ fontSize: "0.6rem", color: DIM, letterSpacing: 0, fontWeight: 600 }}>{s.affiliation.toUpperCase()}</div>
               </div>
             ))}
-            {rowIdx === 1 && !isMobile && (
-              <div style={{ position: "absolute", bottom: "-30%", left: "-2%", width: "75vh", height: "75vh", opacity: 0.2, pointerEvents: "none", zIndex: 0 }}>
-                <RecursiveFrameSVG maxDepth={DEPTH} showText={false} />
-              </div>
-            )}
           </div>
-        ))}
+        ) : (
+          [speakers.slice(0, 5), speakers.slice(5)].map((row, rowIdx) => (
+            <div key={rowIdx} style={{ display: "flex", gap: "2rem", justifyContent: rowIdx === 0 ? "flex-start" : "flex-end", marginBottom: "2rem", flexWrap: "wrap", paddingLeft: rowIdx === 0 ? "4%" : 0, paddingRight: rowIdx === 1 ? "4%" : 0, position: "relative" }}>
+              {rowIdx === 0 && (
+                <div style={{ position: "absolute", top: "-40%", right: "-15%", width: "70vh", height: "70vh", opacity: 0.25, pointerEvents: "none" }}>
+                  <RecursiveFrameSVG maxDepth={DEPTH} showText={false} />
+                </div>
+              )}
+              {row.map((s, i) => (
+                <div key={i} style={{ display: "flex", flexDirection: "column", width: "240px", flexShrink: 0, position: "relative", zIndex: 1 }}>
+                  <div style={{ width: "100%", aspectRatio: "1 / 1", overflow: "hidden", marginBottom: "1.2rem", background: "linear-gradient(180deg, #3d1c09 0%, #000000 100%)", border: "none", borderRadius: "8px" }}>
+                    {s.image && <img src={`/speakers/${s.image}`} alt={s.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "grayscale(100%) sepia(20%)" }} />}
+                  </div>
+                  <div style={{ fontSize: "1rem", color: BRIGHT, letterSpacing: 0, marginBottom: "0.4rem" }}>{s.name}</div>
+                  <div style={{ width: "40px", height: "2px", background: "rgba(255,238,200,0.5)", marginBottom: "0.4rem" }} />
+                  <div style={{ fontSize: "0.65rem", color: DIM, letterSpacing: 0, fontWeight: 600, marginBottom: "0.8rem" }}>{s.affiliation.toUpperCase()}</div>
+                </div>
+              ))}
+              {rowIdx === 1 && (
+                <div style={{ position: "absolute", bottom: "-30%", left: "-2%", width: "75vh", height: "75vh", opacity: 0.2, pointerEvents: "none", zIndex: 0 }}>
+                  <RecursiveFrameSVG maxDepth={DEPTH} showText={false} />
+                </div>
+              )}
+            </div>
+          ))
+        )}
       </div>
     </section>
   );
@@ -524,8 +540,8 @@ function FAQ() {
           </div>
         </>
       )}
-      <div style={{ maxWidth: "800px", margin: "0 8% 0 auto", position: "relative", zIndex: 1 }}>
-        <p style={{ fontSize: "3.5rem", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "3rem" }}>FAQ</p>
+      <div style={{ maxWidth: "800px", margin: isMobile ? "0" : "0 8% 0 auto", position: "relative", zIndex: 1 }}>
+        <p style={{ fontSize: "clamp(2rem, 8vw, 3.5rem)", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "3rem" }}>FAQ</p>
         {FAQS.map((f, i) => (
           <div key={i} style={{ borderTop: "1px solid rgba(255,238,200,0.07)" }}>
             <button onClick={() => setOpen(open === i ? null : i)}
@@ -548,8 +564,9 @@ function FAQ() {
 
 function Apply() {
   const [hovered, setHovered] = useState(false);
+  const isMobile = useIsMobile();
   return (
-    <section id="apply" style={{ padding: "10rem 3rem", background: SECTION_BG, textAlign: "left", fontFamily: FONT }}>
+    <section id="apply" style={{ padding: isMobile ? "6rem 1.5rem" : "10rem 3rem", background: SECTION_BG, textAlign: "left", fontFamily: FONT }}>
       <p style={{ fontSize: "2rem", fontFamily: HEADER_FONT, color: BRIGHT, fontWeight: 400, marginBottom: "2rem" }}>APPLICATIONS OPEN</p>
       <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: BRIGHT, marginBottom: "1.5rem", fontFamily: HEADER_FONT }}>Recursive</div>
       <div style={{ fontSize: "0.9rem", color: MID, letterSpacing: 0, marginBottom: "3rem" }}>MAY 15–17, 2026 · SAN FRANCISCO</div>
