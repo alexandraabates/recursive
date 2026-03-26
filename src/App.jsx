@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 const DEPTH = 9;
@@ -24,65 +24,6 @@ function useIsMobile() {
     return () => window.removeEventListener("resize", h);
   }, []);
   return mobile;
-}
-
-// ── Seeded RNG (stable across renders) ────────────────────────────────────────
-
-function makeRng(seed) {
-  let s = seed >>> 0;
-  return () => { s = Math.imul(1664525, s) + 1013904223 >>> 0; return s / 4294967296; };
-}
-
-// ── Generative background ─────────────────────────────────────────────────────
-
-function MinFrame({ depth, maxDepth }) {
-  if (depth > maxDepth) return null;
-  return (
-    <g>
-      <rect x="-1" y="-1" width="2" height="2" fill="none" stroke="rgba(255,238,200,0.92)" strokeWidth="0.045" />
-      {depth < maxDepth && (
-        <g transform={`rotate(${ROTATION}) scale(${SCALE})`}>
-          <MinFrame depth={depth + 1} maxDepth={maxDepth} />
-        </g>
-      )}
-    </g>
-  );
-}
-
-function GenerativeBackground() {
-  const clusters = useMemo(() => {
-    const rng = makeRng(1337);
-    return Array.from({ length: 22 }, () => ({
-      x: rng() * 100,
-      y: rng() * 100,
-      size: 55 + rng() * 130,
-      duration: 55 + rng() * 110,
-      delay: -(rng() * 110),
-      opacity: 0.07 + rng() * 0.11,
-      depth: 2 + Math.floor(rng() * 3),
-    }));
-  }, []);
-
-  return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 2, pointerEvents: "none", overflow: "hidden", mixBlendMode: "screen" }}>
-      <style>{`@keyframes bgSpin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }`}</style>
-      {clusters.map((c, i) => (
-        <div key={i} style={{
-          position: "absolute",
-          left: `${c.x}%`, top: `${c.y}%`,
-          width: c.size, height: c.size,
-          opacity: c.opacity,
-          animation: `bgSpin ${c.duration}s linear infinite`,
-          animationDelay: `${c.delay}s`,
-          willChange: "transform",
-        }}>
-          <svg viewBox="-1.15 -1.15 2.3 2.3" width="100%" height="100%">
-            <MinFrame depth={0} maxDepth={c.depth} />
-          </svg>
-        </div>
-      ))}
-    </div>
-  );
 }
 
 // ── Recursive visual ──────────────────────────────────────────────────────────
@@ -269,8 +210,6 @@ function Shell({ children }) {
 
   return (
     <div style={{ background: "#0a0705", minHeight: "100vh", color: BRIGHT }}>
-      <GenerativeBackground />
-      <div style={{ position: "fixed", inset: 0, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E\")", opacity: 0.4, pointerEvents: "none", zIndex: 50 }} />
       <Nav scrolled={scrolled} />
       {children}
       <Footer />
@@ -283,29 +222,14 @@ function Shell({ children }) {
 function Hero({ loaded }) {
   const [hovered, setHovered] = useState(false);
   const isMobile = useIsMobile();
-  const sectionRef = useRef(null);
-  const frameRef = useRef(null);
-
-  useEffect(() => {
-    const onScroll = () => {
-      if (!sectionRef.current || !frameRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      const progress = Math.max(0, Math.min(1, -rect.top / (window.innerHeight * 1.4)));
-      frameRef.current.style.transform = `scale(${1 + progress * 4.5})`;
-      frameRef.current.style.opacity = String(Math.max(0, 1 - progress * 0.9));
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
-    <section ref={sectionRef} style={{ minHeight: "185vh", background: "linear-gradient(180deg, #3d1c09 0%, #2a1206 20%, #180b03 50%, #080401 75%, #000000 100%)", position: "relative" }}>
+    <section style={{ minHeight: "185vh", background: "linear-gradient(180deg, #3d1c09 0%, #2a1206 20%, #180b03 50%, #080401 75%, #000000 100%)", position: "relative" }}>
       {/* Sticky viewport — frame stays pinned while section scrolls beneath it */}
       <div style={{ position: "sticky", top: 0, height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
         {/* Outer: load fade-in only */}
         <div style={{ opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease" }}>
-          {/* Inner ref: scroll zoom, no transition */}
-          <div ref={frameRef} style={{ position: "relative", width: "min(82vw, 72vh)", height: "min(82vw, 72vh)", willChange: "transform, opacity", transformOrigin: "center center" }}>
+          <div style={{ position: "relative", width: "min(82vw, 72vh)", height: "min(82vw, 72vh)" }}>
             <RecursiveFrameSVG maxDepth={DEPTH} />
           </div>
         </div>
