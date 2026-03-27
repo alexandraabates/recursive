@@ -27,7 +27,10 @@
       "Bash(curl -L -o \"/Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-7.jpg\" \"https://polandweekly.com/wp-content/uploads/2025/02/fot-OpenAI.png\" && ls -lh /Users/alexandrabates/Projects/recursive-site/public/speakers/speaker-7.jpg)",
       "WebFetch(domain:the-decoder.com)",
       "WebFetch(domain:x.com)",
-      "Bash(sed -i '' \\\\\n  '328s/fontSize: \"2rem\"/fontSize: \"3.5rem\"/' \\\\\n  /Users/alexandrabates/Projects/recursive-site/src/App.jsx\nsed -i '' \\\\\n  '380s/fontSize: \"2rem\"/fontSize: \"3.5rem\"/' \\\\\n  /Users/alexandrabates/Projects/recursive-site/src/App.jsx\nsed -i '' \\\\\n  '495s/fontSize: \"2rem\"/fontSize: \"3.5rem\"/' \\\\\n  /Users/alexandrabates/Projects/recursive-site/src/App.jsx)"
+      "Bash(sed -i '' \\\\\n  '328s/fontSize: \"2rem\"/fontSize: \"3.5rem\"/' \\\\\n  /Users/alexandrabates/Projects/recursive-site/src/App.jsx\nsed -i '' \\\\\n  '380s/fontSize: \"2rem\"/fontSize: \"3.5rem\"/' \\\\\n  /Users/alexandrabates/Projects/recursive-site/src/App.jsx\nsed -i '' \\\\\n  '495s/fontSize: \"2rem\"/fontSize: \"3.5rem\"/' \\\\\n  /Users/alexandrabates/Projects/recursive-site/src/App.jsx)",
+      "WebFetch(domain:deepmind.google)",
+      "WebFetch(domain:www.ai4goodlab.com)",
+      "Bash(git add -A && git commit -m \"$\\(cat <<'EOF'\nVarious visual tweaks and speaker updates\n\n- Add Mia Glaese \\(OpenAI\\) as speaker\n- Dynamic speaker grid with auto-fill columns\n- FAQ and speaker body text size increases\n- FAQ squares repositioned\n- Speaker left squares bleed off left edge\n- Second biggest FAQ square less opaque\n- Update about section copy\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>\nEOF\n\\)\" && git push)"
     ]
   }
 }
