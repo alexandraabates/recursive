@@ -342,7 +342,7 @@ function About() {
           Recursive is a 2.5 day conference in The Embarcadero, SF, and will have ~200 attendees, from a mix of frontier AI labs, AI safety research orgs, and startups. It is primarily organized by Constellation, with support from OpenAI. Attendance is by invitation only.
         </p>
         <p style={{ fontSize: "1rem", color: MID, lineHeight: 1.9, marginTop: "1rem", letterSpacing: 0, fontFamily: BODY_FONT }}>
-          If you are interested in attending, please apply by April 25. We aim to respond to applications within 2 weeks.
+          If you are interested in attending, please apply by May 1. We aim to respond to applications within 2 weeks.
         </p>
         <div style={{ marginTop: "3rem", display: "flex", gap: isMobile ? "2rem" : "4rem", flexWrap: "wrap" }}>
           {[["Location", "The Embarcadero, SF"], ["Dates", "May 15–17, 2026"], ["Format", "Invite + Application"]].map(([label, val]) => (
@@ -489,7 +489,7 @@ function Location() {
 
 const FAQS = [
   { q: "Who is this event for?", a: "We hope to bring together safety and security researchers from frontier labs, non-profits, and academia, as well as researchers not working on safety or security issues who'd like to learn more, and PMs, managers, and operators in safety-relevant domains." },
-  { q: "When is the deadline to apply?", a: "The deadline to apply is April 25, and the deadline to register is May 8. We will leave the application link up until the conference begins, but may not review applications submitted after the deadline." },
+  { q: "When is the deadline to apply?", a: "The deadline to apply is May 1, and the deadline to register is May 8. We will leave the application link up until the conference begins, but may not review applications submitted after the deadline." },
   { q: "When should I expect to hear back on my application?", a: "We will process applications on a rolling basis, and will aim to respond within 2 weeks." },
   { q: "Does it cost anything to attend?", a: "No; attendance is free." },
   { q: "Who is funding this event?", a: "The event is funded by Constellation Institute and OpenAI." },
