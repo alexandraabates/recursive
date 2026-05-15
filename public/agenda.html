@@ -10,7 +10,7 @@
 :root {
   /* ── Brand palette from recursive.to ── */
   --bg:    #0e0a06;        /* deep warm black */
-  --srf:   #2a1508;        /* header bg — matches logo PNG background exactly */
+  --srf:   #291c11;        /* header bg — matches logo PNG background exactly */
   --srf2:  #1a0d06;        /* tab bar — gradient step between header and page */
   --bdr:   rgba(255,238,200,0.1);
   --text:  #ffeec8;        /* brand cream */
@@ -151,7 +151,7 @@ body {
 .s-sal { background: #1a0e06; border-left: 3px solid var(--sal); }
 
 .s-meal   { opacity: 0.35 !important; border-left-style: dashed !important; }
-.s-social { border-left-width: 1px !important; opacity: 0.6 !important; }
+.s-social { opacity: 0.7 !important; }
 
 /* Currently-running: border + inner glow strengthen the accent */
 .s-lib.current {
@@ -181,7 +181,7 @@ body {
   font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 300;
   font-variant-numeric: tabular-nums; color: var(--faint); margin-top: 2px;
 }
-.s-meal .s-ppl { display: none; }
+/* meal ppl (time range) now visible as second line */
 
 .sess { min-height: 54px; }
 .sess.s-meal, .sess.s-social { min-height: 0; }
@@ -240,13 +240,13 @@ const DATA = [
   {d:'2026-05-15',s:'19:00',dur:300,rm:'Library',title:'Opening Reception: Dinner & Discussion Groups',ppl:'Aaron Scher · Peter Barnett · Linh Chi Nguyen · Rohan Subramani',type:'social'},
 
   // May 16
-  {d:'2026-05-16',s:'08:30',dur:90, rm:'Library',title:'Breakfast',ppl:'',type:'meal'},
+  {d:'2026-05-16',s:'08:30',dur:90, rm:'Library',title:'Breakfast',ppl:'8:30 – 10:00am',type:'meal'},
   {d:'2026-05-16',s:'10:00',dur:55, rm:'Gallery',title:'Opening Activity',ppl:'Jasmine Wang · Alexandra Bates',type:'activity'},
   {d:'2026-05-16',s:'11:00',dur:25, rm:'Gallery',title:'Talk: AI Timelines Milestones',ppl:'Ajeya Cotra',type:'talk'},
   {d:'2026-05-16',s:'11:30',dur:25, rm:'Gallery',title:"Talk: Why I'm Less Optimistic than the Labs about Alignment",ppl:'Daniel Kokotajlo',type:'talk'},
   {d:'2026-05-16',s:'12:00',dur:55, rm:'Gallery',title:'Discussion: How likely is scheming?',ppl:'Alex Mallen · Alexander Turner · Evan Hubinger · Marius Hobbhahn',type:'discussion'},
   {d:'2026-05-16',s:'12:00',dur:55, rm:'Salon',  title:'Talk: Plan A and How the Labs Can Help?',ppl:'Thomas Larsen · Daniel Kokotajlo',type:'talk'},
-  {d:'2026-05-16',s:'12:30',dur:90, rm:'Library',title:'Lunch',ppl:'',type:'meal'},
+  {d:'2026-05-16',s:'12:30',dur:90, rm:'Library',title:'Lunch',ppl:'12:30 – 2:00pm',type:'meal'},
   {d:'2026-05-16',s:'14:00',dur:55, rm:'Gallery',title:'Discussion: How hard is alignment?',ppl:'Sara Price · Ryan Greenblatt · Joshua Clymer · James Lucassen',type:'discussion'},
   {d:'2026-05-16',s:'14:00',dur:25, rm:'Salon',  title:'Q&A: Ethan Perez',ppl:'Ethan Perez',type:'talk'},
   {d:'2026-05-16',s:'14:30',dur:25, rm:'Salon',  title:'Talk: The Plan for Propensity Evals',ppl:'Sydney',type:'talk'},
@@ -257,10 +257,10 @@ const DATA = [
   {d:'2026-05-16',s:'17:00',dur:55, rm:'Gallery',title:'Lightning Talks',ppl:'Wolfe · Bashkansky · Evans · Bhatt · Stastny · Rein · Fisher · Carroll · Korbak · Parker-Sartori',type:'talk'},
   {d:'2026-05-16',s:'17:00',dur:55, rm:'Salon',  title:'Discussion: Forecasting RSI',ppl:'Eli Lifland · Anson Ho · Buck Shlegeris',type:'discussion'},
   {d:'2026-05-16',s:'18:00',dur:25, rm:'Gallery',title:'Talk: Responsible Scaling of AI R&D',ppl:'Jakub Pachocki',type:'talk'},
-  {d:'2026-05-16',s:'18:30',dur:120,rm:'Library',title:'Dinner',ppl:'',type:'meal'},
+  {d:'2026-05-16',s:'18:30',dur:120,rm:'Library',title:'Dinner',ppl:'6:30 – 8:30pm',type:'meal'},
 
   // May 17
-  {d:'2026-05-17',s:'08:30',dur:90, rm:'Library',title:'Breakfast',ppl:'',type:'meal'},
+  {d:'2026-05-17',s:'08:30',dur:90, rm:'Library',title:'Breakfast',ppl:'8:30 – 10:00am',type:'meal'},
   {d:'2026-05-17',s:'09:30',dur:210,rm:'Salon',  title:'Lab Dynamics Tabletop Exercise',ppl:'Redwood Research',type:'activity'},
   {d:'2026-05-17',s:'09:30',dur:25, rm:'Gallery',title:'Talk: Obstacles to Automated Safety',ppl:'Aleksandr Bowkis',type:'talk'},
   {d:'2026-05-17',s:'10:00',dur:25, rm:'Gallery',title:'Talk: Noam Brown',ppl:'Noam Brown',type:'talk'},
@@ -268,7 +268,7 @@ const DATA = [
   {d:'2026-05-17',s:'11:00',dur:25, rm:'Gallery',title:'Talk: Sella Nevo',ppl:'Sella Nevo',type:'talk'},
   {d:'2026-05-17',s:'11:30',dur:25, rm:'Gallery',title:"Talk: It's 2030 and We Fucked Up",ppl:'Boaz Barak',type:'talk'},
   {d:'2026-05-17',s:'12:00',dur:25, rm:'Gallery',title:'Q&A: Help Nick Improve His Automated AI R&D Legislation',ppl:'Nick Beckstead',type:'talk'},
-  {d:'2026-05-17',s:'12:30',dur:90, rm:'Library',title:'Lunch',ppl:'',type:'meal'},
+  {d:'2026-05-17',s:'12:30',dur:90, rm:'Library',title:'Lunch',ppl:'12:30 – 2:00pm',type:'meal'},
   {d:'2026-05-17',s:'12:30',dur:25, rm:'Gallery',title:'Talk: What safety work should happen inside vs. outside labs?',ppl:'Buck Shlegeris',type:'talk'},
   {d:'2026-05-17',s:'14:00',dur:55, rm:'Gallery',title:'Talk: An AI Futures & Redwood Alignment Plan',ppl:'Thomas Larsen · Ryan Greenblatt',type:'talk'},
   {d:'2026-05-17',s:'14:00',dur:55, rm:'Salon',  title:'Discussion: Economics of RSI',ppl:'Tom Cunningham · Philip Trammell',type:'discussion'},
@@ -283,7 +283,7 @@ const DATA = [
   {d:'2026-05-17',s:'17:00',dur:25, rm:'Gallery',title:'Talk: Julian Michael',ppl:'',type:'talk'},
   {d:'2026-05-17',s:'17:30',dur:25, rm:'Gallery',title:'Talk: Plan D',ppl:'Ryan Greenblatt',type:'talk'},
   {d:'2026-05-17',s:'18:00',dur:25, rm:'Gallery',title:'Closing Session',ppl:'Alexandra Bates · Jasmine Wang',type:'activity'},
-  {d:'2026-05-17',s:'18:30',dur:120,rm:'Library',title:'Dinner',ppl:'',type:'meal'},
+  {d:'2026-05-17',s:'18:30',dur:120,rm:'Library',title:'Dinner',ppl:'6:30 – 8:30pm',type:'meal'},
   {d:'2026-05-17',s:'20:00',dur:240,rm:'Gallery',title:'Afterparty!',ppl:'Shack15 · +1s welcome · RSVP on Luma',type:'social'},
 ];
 
@@ -291,17 +291,66 @@ const DAYS  = ['2026-05-15','2026-05-16','2026-05-17'];
 const ROOMS = ['Library','Gallery','Salon'];
 const RC    = {Library:'lib', Gallery:'gal', Salon:'sal'};
 const RANGE = {
-  '2026-05-15': [18*60,      24*60      ],
+  '2026-05-15': [19*60,      24*60      ],
   '2026-05-16': [8*60+30,    20*60+30   ],
   '2026-05-17': [8*60+30,    20*60+30   ],
 };
 
-// Percentage helper — positions everything relative to the schedule body.
-// Using % instead of px means zoom-in/zoom-out and any screen height
-// automatically scales the layout correctly with zero JS recalculation.
-function pct(min, start, span) {
-  return ((min - start) / span * 100).toFixed(3) + '%';
+// ── Piecewise time scale ───────────────────────────────────────────────────
+// Meal-only periods (breakfast 8:30–9:30, dinner 6:30–8:30) are compressed
+// to a fraction of their linear height so session content fills the screen.
+// All other positioning still uses percentages so zoom works correctly.
+
+const COMPRESS = {
+  '2026-05-15': null,  // evening-only day — no compression needed
+  '2026-05-16': [
+    { end: 9*60+30,  w: 0.35 },   // 8:30–9:30  breakfast  → compressed
+    { end: 18*60+30, w: 1.0  },   // 9:30–18:30 sessions   → full scale
+    { end: 20*60+30, w: 0.35 },   // 18:30–20:30 dinner    → compressed
+  ],
+  '2026-05-17': [
+    { end: 9*60+30,  w: 0.35 },
+    { end: 18*60+30, w: 1.0  },
+    { end: 20*60+30, w: 0.35 },
+  ],
+};
+
+// Returns a function: absoluteMinutes → percentage (0–100)
+function buildScale(dayStart, dayEnd, zones) {
+  if (!zones) {
+    return min => (min - dayStart) / (dayEnd - dayStart) * 100;
+  }
+  // Build concrete segments clipped to [dayStart, dayEnd]
+  const segs = [];
+  let prev = dayStart;
+  for (const z of zones) {
+    const s = Math.max(prev, dayStart);
+    const e = Math.min(z.end, dayEnd);
+    if (e > s) segs.push({ s, e, w: z.w });
+    prev = z.end;
+  }
+  const totalW = segs.reduce((a, sg) => a + (sg.e - sg.s) * sg.w, 0);
+  // Pre-compute cumulative % at each segment boundary
+  let cum = 0;
+  const info = segs.map(sg => {
+    const p0 = cum;
+    cum += (sg.e - sg.s) * sg.w / totalW * 100;
+    return { ...sg, p0, p1: cum };
+  });
+  return min => {
+    min = Math.max(dayStart, Math.min(dayEnd, min));
+    for (const sg of info) {
+      if (min <= sg.e) {
+        const t = (min - sg.s) / (sg.e - sg.s);
+        return sg.p0 + t * (sg.p1 - sg.p0);
+      }
+    }
+    return 100;
+  };
 }
+
+// Populated in buildDay(); used by updateNow() to position the live line.
+const DAY_SCALE = {};
 
 function toM(t) {
   const [h, m] = t.split(':').map(Number);
@@ -318,8 +367,10 @@ function fmtT(min) {
 
 function buildDay(date) {
   const [ds, de] = RANGE[date];
-  const span  = de - ds;
   const sessions = DATA.filter(x => x.d === date);
+  // Build (and cache) the non-linear time→percent mapping for this day
+  const Y = buildScale(ds, de, COMPRESS[date]);
+  DAY_SCALE[date] = Y;
 
   const panel = document.createElement('div');
   panel.className = 'day';
@@ -334,7 +385,7 @@ function buildDay(date) {
   for (let t = ds; t <= de; t += 30) {
     const lbl = document.createElement('div');
     lbl.className = 't-lbl';
-    lbl.style.top = pct(t, ds, span);
+    lbl.style.top = Y(t).toFixed(3) + '%';
     lbl.textContent = fmtT(t);
     gb.appendChild(lbl);
   }
@@ -364,7 +415,7 @@ function buildDay(date) {
     for (let t = ds; t <= de; t += 30) {
       const gl = document.createElement('div');
       gl.className = 'gline' + (t % 60 === 0 ? ' gline-h' : '');
-      gl.style.top = pct(t, ds, span);
+      gl.style.top = Y(t).toFixed(3) + '%';
       body.appendChild(gl);
     }
 
@@ -372,8 +423,7 @@ function buildDay(date) {
     const nl = document.createElement('div');
     nl.className = 'nowl';
     nl.style.display = 'none';
-    nl.dataset.start = ds;
-    nl.dataset.span  = span;
+    // position handled by DAY_SCALE in updateNow()
     body.appendChild(nl);
 
     // Sessions:
@@ -402,8 +452,8 @@ function buildDay(date) {
       card.className = `sess s-${rc}` +
         (isMeal   ? ' s-meal'   : '') +
         (isSocial ? ' s-social' : '');
-      card.style.top    = pct(sm, ds, span);
-      card.style.height = (s.dur / span * 100).toFixed(3) + '%';
+      card.style.top    = Y(sm).toFixed(3) + '%';
+      card.style.height = (Y(Math.min(sm + s.dur, de)) - Y(sm)).toFixed(3) + '%';
       card.style.zIndex = idx + 1;
       card.dataset.sm   = sm;
       card.dataset.dur  = s.dur;
@@ -413,17 +463,14 @@ function buildDay(date) {
       tEl.textContent = s.title;
       card.appendChild(tEl);
 
-      if (s.ppl && !isMeal) {
+      if (s.ppl) {
         const pEl = document.createElement('div');
         pEl.className = 's-ppl';
         pEl.textContent = s.ppl;
         card.appendChild(pEl);
       }
 
-      const tmEl = document.createElement('div');
-      tmEl.className = 's-t';
-      tmEl.textContent = fmtT(sm);
-      card.appendChild(tmEl);
+      // time line removed — meals show range in title, other sessions need no time
 
       body.appendChild(card);
     });
@@ -478,11 +525,12 @@ function updateNow() {
   document.querySelectorAll('.nowl').forEach(el => {
     const panel = el.closest('.day');
     if (!panel || panel.dataset.date !== today) { el.style.display = 'none'; return; }
-    const start  = parseInt(el.dataset.start);
-    const span   = parseInt(el.dataset.span);
-    const nowPct = (nowMin - start) / span * 100;
-    if (nowPct < 0 || nowPct > 100) { el.style.display = 'none'; }
-    else { el.style.display = 'block'; el.style.top = nowPct.toFixed(2) + '%'; }
+    const [ds, de] = RANGE[today];
+    if (nowMin < ds || nowMin > de) { el.style.display = 'none'; return; }
+    const scale = DAY_SCALE[today];
+    if (!scale) { el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    el.style.top = scale(nowMin).toFixed(2) + '%';
   });
 
   document.querySelectorAll('.sess').forEach(el => {
