@@ -657,14 +657,18 @@ function LocationPage() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Shell>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/agenda" element={<AgendaPage />} />
-          <Route path="/schedule" element={<SchedulePage />} />
-          <Route path="/location" element={<LocationPage />} />
-        </Routes>
-      </Shell>
+      <Routes>
+        <Route path="/agenda" element={<AgendaPage />} />
+        <Route path="*" element={
+          <Shell>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/schedule" element={<SchedulePage />} />
+              <Route path="/location" element={<LocationPage />} />
+            </Routes>
+          </Shell>
+        } />
+      </Routes>
     </BrowserRouter>
   );
 }
