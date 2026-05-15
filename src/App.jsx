@@ -634,6 +634,16 @@ function PasswordGate({ children }) {
   );
 }
 
+function AgendaPage() {
+  return (
+    <iframe
+      src="/agenda.html"
+      style={{ position: "fixed", inset: 0, width: "100%", height: "100%", border: "none", zIndex: 0 }}
+      title="Agenda"
+    />
+  );
+}
+
 function SchedulePage() {
   return <PasswordGate><Schedule /></PasswordGate>;
 }
@@ -650,6 +660,7 @@ export default function App() {
       <Shell>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/agenda" element={<AgendaPage />} />
           <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/location" element={<LocationPage />} />
         </Routes>
